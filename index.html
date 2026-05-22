@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Turbo Lotto AI</title>
+<title>Turbo Lotto AI PRO</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -68,11 +68,11 @@ body{
 <div class="glass rounded-3xl p-5 shadow-2xl">
 
 <h1 class="text-3xl font-bold text-center mb-2">
- Turbo Lotto AI
+🎯 Turbo Lotto AI PRO
 </h1>
 
 <p class="text-center text-emerald-400 mb-6">
-AI 
+AI วิเคราะห์เลขเด่น + Heatmap + Pair Analysis
 </p>
 
 <!-- MODE -->
@@ -82,13 +82,13 @@ AI 
 <button
 id="thaiBtn"
 class="flex-1 bg-emerald-600 py-3 rounded-xl font-bold">
- 
+🇹🇭 หวยไทย
 </button>
 
 <button
 id="laoBtn"
 class="flex-1 bg-slate-800 py-3 rounded-xl font-bold">
- 
+🇱🇦 หวยลาว
 </button>
 
 </div>
@@ -98,7 +98,7 @@ class="flex-1 bg-slate-800 py-3 rounded-xl font-bold">
 <button
 id="generateBtn"
 class="w-full bg-gradient-to-r from-violet-600 to-indigo-600 py-4 rounded-2xl font-bold text-lg mb-6">
- 
+🚀 วิเคราะห์เลข
 </button>
 
 <!-- MAIN -->
@@ -106,7 +106,7 @@ class="w-full bg-gradient-to-r from-violet-600 to-indigo-600 py-4 rounded-2xl fo
 <div class="mb-6">
 
 <h2 class="font-bold mb-3 text-slate-300">
-
+รางวัลหลัก
 </h2>
 
 <div
@@ -116,12 +116,12 @@ class="flex justify-center gap-2 flex-wrap">
 
 </div>
 
-<!-- 3 DIGIT -->
+<!-- 3 -->
 
 <div class="mb-6">
 
 <h2 class="font-bold mb-3 text-slate-300">
-3 
+3 ตัวท้าย
 </h2>
 
 <div
@@ -131,12 +131,12 @@ class="flex justify-center gap-2 flex-wrap">
 
 </div>
 
-<!-- 2 DIGIT -->
+<!-- 2 -->
 
 <div class="mb-6">
 
 <h2 class="font-bold mb-3 text-slate-300">
-2 
+2 ตัวท้าย
 </h2>
 
 <div
@@ -151,7 +151,7 @@ class="flex justify-center gap-2 flex-wrap">
 <div class="mb-6">
 
 <h2 class="font-bold mb-3 text-yellow-400">
-2 
+2 ตัวล่าง
 </h2>
 
 <div
@@ -166,8 +166,15 @@ class="flex justify-center gap-2 flex-wrap">
 <div class="glass rounded-2xl p-4 mb-6">
 
 <div class="flex justify-between mb-2">
-<span>AI Confidence</span>
-<span id="scoreText">0%</span>
+
+<span>
+AI Confidence
+</span>
+
+<span id="scoreText">
+0%
+</span>
+
 </div>
 
 <div class="w-full bg-slate-800 rounded-full overflow-hidden">
@@ -186,10 +193,28 @@ class="bar w-0">
 <div class="glass rounded-2xl p-4 mb-6">
 
 <h2 class="font-bold mb-4">
- Heatmap
+🔥 Heatmap
 </h2>
 
-<div id="heatmap" class="space-y-3"></div>
+<div
+id="heatmap"
+class="space-y-3">
+</div>
+
+</div>
+
+<!-- PAIRS -->
+
+<div class="glass rounded-2xl p-4 mb-6">
+
+<h2 class="font-bold mb-4">
+🔗 Pair Analysis
+</h2>
+
+<div
+id="pairContainer"
+class="grid grid-cols-2 gap-3">
+</div>
 
 </div>
 
@@ -198,10 +223,13 @@ class="bar w-0">
 <div class="glass rounded-2xl p-4">
 
 <h2 class="font-bold mb-4">
- History
+📊 History
 </h2>
 
-<div id="history" class="space-y-3"></div>
+<div
+id="history"
+class="space-y-3">
+</div>
 
 </div>
 
@@ -211,62 +239,103 @@ class="bar w-0">
 
 <script>
 
+/* =========================================
+   MODE
+========================================= */
+
 let currentMode='thai';
+
+/* =========================================
+   DATA
+========================================= */
 
 const historyData={
 
 thai:[
-  {
-    date:'16 .. 69',
-    main:'985452',
-    bottom:'95'
-  },
-  {
-    date:'2 .. 69',
-    main:'284729',
-    bottom:'38'
-  },
-  {
-    date:'16 .. 69',
-    main:'543118',
-    bottom:'21'
-  },
-  {
-    date:'1 .. 69',
-    main:'074205',
-    bottom:'64'
-  },
-  {
-    date:'16 .. 69',
-    main:'998887',
-    bottom:'09'
-  }
+
+{
+date:'16 พ.ค. 69',
+main:'985452',
+bottom:'95'
+},
+
+{
+date:'2 พ.ค. 69',
+main:'284729',
+bottom:'38'
+},
+
+{
+date:'16 เม.ย. 69',
+main:'543118',
+bottom:'21'
+},
+
+{
+date:'1 เม.ย. 69',
+main:'074205',
+bottom:'64'
+},
+
+{
+date:'16 มี.ค. 69',
+main:'998887',
+bottom:'09'
+},
+
+{
+date:'1 มี.ค. 69',
+main:'125272',
+bottom:'09'
+},
+
+{
+date:'16 ก.พ. 69',
+main:'361807',
+bottom:'92'
+}
+
 ],
 
 lao:[
-  {
-    date:'20 .. 69',
-    main:'8769'
-  },
-  {
-    date:'18 .. 69',
-    main:'9572'
-  },
-  {
-    date:'15 .. 69',
-    main:'3417'
-  },
-  {
-    date:'13 .. 69',
-    main:'7804'
-  },
-  {
-    date:'11 .. 69',
-    main:'1932'
-  }
+
+{
+date:'20 พ.ค. 69',
+main:'8769'
+},
+
+{
+date:'18 พ.ค. 69',
+main:'9572'
+},
+
+{
+date:'15 พ.ค. 69',
+main:'3417'
+},
+
+{
+date:'13 พ.ค. 69',
+main:'7804'
+},
+
+{
+date:'11 พ.ค. 69',
+main:'1932'
+},
+
+{
+date:'8 พ.ค. 69',
+main:'4451'
+}
+
 ]
 
 };
+
+/* =========================================
+   ELEMENTS
+========================================= */
 
 const thaiBtn=
 document.getElementById('thaiBtn');
@@ -295,324 +364,548 @@ document.getElementById('history');
 const heatmap=
 document.getElementById('heatmap');
 
+const pairContainer=
+document.getElementById('pairContainer');
+
+/* =========================================
+   HISTORY
+========================================= */
+
 function renderHistory(){
 
-  historyContainer.innerHTML='';
+historyContainer.innerHTML='';
 
-  historyData[currentMode].forEach(item=>{
+historyData[currentMode]
+.forEach(item=>{
 
-    const div=document.createElement('div');
+const div=
+document.createElement('div');
 
-    div.className=
-    'bg-slate-900 rounded-xl p-3';
+div.className=
+'bg-slate-900 rounded-xl p-3';
 
-    if(currentMode==='thai'){
+if(currentMode==='thai'){
 
-      div.innerHTML=`
+div.innerHTML=`
 
-      <div class="flex justify-between">
+<div class="flex justify-between">
 
-        <span class="text-emerald-400">
-          ${item.date}
-        </span>
+<span class="text-emerald-400">
+${item.date}
+</span>
 
-        <span class="text-yellow-400">
-          ${item.bottom}
-        </span>
+<span class="text-yellow-400">
+${item.bottom}
+</span>
 
-      </div>
+</div>
 
-      <div class="text-2xl font-bold tracking-widest mt-2">
-        ${item.main}
-      </div>
+<div class="text-2xl font-bold tracking-widest mt-2">
+${item.main}
+</div>
 
-      `;
+`;
 
-    }else{
+}else{
 
-      const top2=item.main.slice(-2);
+const top2=
+item.main.slice(-2);
 
-      const bottom2=item.main.slice(0,2);
+const bottom2=
+item.main.slice(0,2);
 
-      div.innerHTML=`
+div.innerHTML=`
 
-      <div class="flex justify-between">
+<div class="flex justify-between">
 
-        <span class="text-red-400">
-          ${item.date}
-        </span>
+<span class="text-red-400">
+${item.date}
+</span>
 
-        <span class="text-yellow-400">
-          ${bottom2}
-        </span>
+<span class="text-yellow-400">
+${bottom2}
+</span>
 
-      </div>
+</div>
 
-      <div class="text-2xl font-bold tracking-widest mt-2">
-        ${item.main}
-      </div>
+<div class="text-2xl font-bold tracking-widest mt-2">
+${item.main}
+</div>
 
-      <div class="text-sm text-slate-400 mt-1">
-         ${top2} |  ${bottom2}
-      </div>
+<div class="text-sm text-slate-400 mt-1">
+บน ${top2} | ล่าง ${bottom2}
+</div>
 
-      `;
-    }
-
-    historyContainer.appendChild(div);
-
-  });
+`;
 
 }
+
+historyContainer.appendChild(div);
+
+});
+
+}
+
+/* =========================================
+   RANDOM
+========================================= */
+
+function secureRandom(max){
+
+const array=
+new Uint32Array(1);
+
+crypto.getRandomValues(array);
+
+return array[0] % max;
+
+}
+
+/* =========================================
+   FREQUENCY
+========================================= */
 
 function getFrequency(position){
 
-  const freq={};
+const freq={};
 
-  for(let i=0;i<=9;i++){
-    freq[i]=1;
-  }
+for(let i=0;i<=9;i++){
 
-  historyData[currentMode].forEach(item=>{
-
-    const digit=item.main[position];
-
-    if(digit!==undefined){
-
-      freq[digit]+=3;
-
-    }
-
-  });
-
-  return freq;
+freq[i]=1;
 
 }
+
+const data=
+historyData[currentMode];
+
+data.forEach((item,index)=>{
+
+const digit=
+item.main[position];
+
+if(digit!==undefined){
+
+const weight=
+data.length-index;
+
+freq[digit]+=weight;
+
+}
+
+});
+
+return freq;
+
+}
+
+/* =========================================
+   WEIGHTED PICK
+========================================= */
 
 function weightedPick(freq){
 
-  const pool=[];
+const pool=[];
 
-  Object.entries(freq).forEach(([digit,score])=>{
+Object.entries(freq)
+.forEach(([digit,score])=>{
 
-    for(let i=0;i<score;i++){
+for(let i=0;i<score;i++){
 
-      pool.push(digit);
-
-    }
-
-  });
-
-  return pool[
-    Math.floor(Math.random()*pool.length)
-  ];
+pool.push(digit);
 
 }
+
+});
+
+return pool[
+secureRandom(pool.length)
+];
+
+}
+
+/* =========================================
+   GENERATE NUMBER
+========================================= */
 
 function generateNumber(){
 
-  let result='';
+let result='';
 
-  const length=
-  currentMode==='thai' ? 6 : 4;
+const length=
+currentMode==='thai'
+? 6
+: 4;
 
-  for(let pos=0;pos<length;pos++){
+for(let pos=0;pos<length;pos++){
 
-    const freq=getFrequency(pos);
+const freq=
+getFrequency(pos);
 
-    result+=weightedPick(freq);
+result+=
+weightedPick(freq);
 
-  }
+}
 
-  return result;
+return result;
 
 }
 
-function renderBalls(container,number,color){
+/* =========================================
+   REPEAT CHECK
+========================================= */
 
-  container.innerHTML='';
+function hasTooManyRepeats(number){
 
-  number.split('').forEach(n=>{
+const counts={};
 
-    const div=document.createElement('div');
+number.split('')
+.forEach(n=>{
 
-    div.className=
-    `ball ${color}`;
+counts[n]=
+(counts[n]||0)+1;
 
-    div.innerText=n;
+});
 
-    container.appendChild(div);
-
-  });
+return Object.values(counts)
+.some(count=>count>=4);
 
 }
+
+/* =========================================
+   CONFIDENCE
+========================================= */
+
+function calculateConfidence(number){
+
+let score=0;
+
+number.split('')
+.forEach((digit,pos)=>{
+
+const freq=
+getFrequency(pos);
+
+score+=freq[digit];
+
+});
+
+return Math.min(
+99,
+Math.floor(score*2)
+);
+
+}
+
+/* =========================================
+   BALLS
+========================================= */
+
+function renderBalls(
+container,
+number,
+color
+){
+
+container.innerHTML='';
+
+number.split('')
+.forEach(n=>{
+
+const div=
+document.createElement('div');
+
+div.className=
+`ball ${color}`;
+
+div.innerText=n;
+
+container.appendChild(div);
+
+});
+
+}
+
+/* =========================================
+   HEATMAP
+========================================= */
 
 function renderHeatmap(){
 
-  heatmap.innerHTML='';
+heatmap.innerHTML='';
 
-  const length=
-  currentMode==='thai' ? 6 : 4;
+const length=
+currentMode==='thai'
+? 6
+: 4;
 
-  for(let pos=0;pos<length;pos++){
+for(let pos=0;pos<length;pos++){
 
-    const freq=getFrequency(pos);
+const freq=
+getFrequency(pos);
 
-    const max=
-    Math.max(...Object.values(freq));
+const total=
+Object.values(freq)
+.reduce((a,b)=>a+b,0);
 
-    const topDigit=
-    Object.entries(freq)
-    .sort((a,b)=>b[1]-a[1])[0];
+const topDigit=
+Object.entries(freq)
+.sort((a,b)=>b[1]-a[1])[0];
 
-    const percent=
-    Math.floor((topDigit[1]/max)*100);
+const percent=
+Math.floor(
+(topDigit[1]/total)*100
+);
 
-    const row=document.createElement('div');
+const row=
+document.createElement('div');
 
-    row.innerHTML=`
+row.innerHTML=`
 
-    <div class="flex justify-between text-sm mb-1">
+<div class="flex justify-between text-sm mb-1">
 
-      <span> ${pos+1}</span>
+<span>
+หลัก ${pos+1}
+</span>
 
-      <span>${topDigit[0]}</span>
+<span>
+เลขเด่น ${topDigit[0]}
+</span>
 
-    </div>
+</div>
 
-    <div class="w-full bg-slate-800 rounded-full overflow-hidden">
+<div class="w-full bg-slate-800 rounded-full overflow-hidden">
 
-      <div
-      class="bar"
-      style="width:${percent}%">
-      </div>
+<div
+class="bar"
+style="width:${percent}%">
+</div>
 
-    </div>
+</div>
 
-    `;
+<div class="text-xs text-slate-400 mt-1">
+Probability ${percent}%
+</div>
 
-    heatmap.appendChild(row);
+`;
 
-  }
+heatmap.appendChild(row);
 
 }
+
+}
+
+/* =========================================
+   PAIR ANALYSIS
+========================================= */
+
+function getPairAnalysis(){
+
+const pairs={};
+
+historyData[currentMode]
+.forEach(item=>{
+
+const num=item.main;
+
+for(let i=0;i<num.length-1;i++){
+
+const pair=
+num[i]+num[i+1];
+
+pairs[pair]=
+(pairs[pair]||0)+1;
+
+}
+
+});
+
+return Object.entries(pairs)
+.sort((a,b)=>b[1]-a[1])
+.slice(0,6);
+
+}
+
+/* =========================================
+   RENDER PAIRS
+========================================= */
+
+function renderPairs(){
+
+pairContainer.innerHTML='';
+
+const topPairs=
+getPairAnalysis();
+
+topPairs.forEach(pair=>{
+
+const div=
+document.createElement('div');
+
+div.className=
+'bg-slate-900 p-3 rounded-xl';
+
+div.innerHTML=`
+
+<div class="text-2xl font-bold text-cyan-400">
+${pair[0]}
+</div>
+
+<div class="text-xs text-slate-400">
+${pair[1]} times
+</div>
+
+`;
+
+pairContainer.appendChild(div);
+
+});
+
+}
+
+/* =========================================
+   AI GENERATE
+========================================= */
 
 function generateAI(){
 
-  generateBtn.innerText=
-  '...';
+generateBtn.innerText=
+'กำลังวิเคราะห์...';
 
-  const loading=
-  `<div class="ball loading bg-slate-700"></div>`;
+const loading=
+`<div class="ball loading bg-slate-700">⚡</div>`;
 
-  mainContainer.innerHTML=loading;
-  threeContainer.innerHTML=loading;
-  twoContainer.innerHTML=loading;
-  bottomContainer.innerHTML=loading;
+mainContainer.innerHTML=loading;
+threeContainer.innerHTML=loading;
+twoContainer.innerHTML=loading;
+bottomContainer.innerHTML=loading;
 
-  setTimeout(()=>{
+setTimeout(()=>{
 
-    const number=
-    generateNumber();
+let number='';
 
-    const three=
-    number.slice(-3);
+do{
 
-    const two=
-    number.slice(-2);
+number=
+generateNumber();
 
-    let bottom='';
+}
+while(
+hasTooManyRepeats(number)
+);
 
-    if(currentMode==='thai'){
+const three=
+number.slice(-3);
 
-      bottom=
-      generateNumber().slice(-2);
+const two=
+number.slice(-2);
 
-    }else{
+let bottom='';
 
-      bottom=
-      number.slice(0,2);
+if(currentMode==='thai'){
 
-    }
+bottom=
+generateNumber()
+.slice(-2);
 
-    renderBalls(
-      mainContainer,
-      number,
-      currentMode==='thai'
-      ?
-      'bg-gradient-to-br from-emerald-500 to-teal-700'
-      :
-      'bg-gradient-to-br from-red-500 to-rose-700'
-    );
+}else{
 
-    renderBalls(
-      threeContainer,
-      three,
-      'bg-gradient-to-br from-violet-500 to-indigo-700'
-    );
-
-    renderBalls(
-      twoContainer,
-      two,
-      'bg-gradient-to-br from-blue-500 to-cyan-700'
-    );
-
-    renderBalls(
-      bottomContainer,
-      bottom,
-      'bg-gradient-to-br from-yellow-500 to-orange-600'
-    );
-
-    const score=
-    Math.floor(Math.random()*20)+80;
-
-    document.getElementById('scoreText')
-    .innerText=score+'%';
-
-    document.getElementById('scoreBar')
-    .style.width=score+'%';
-
-    generateBtn.innerText=
-    ' ';
-
-  },1200);
+bottom=
+number.slice(0,2);
 
 }
 
+renderBalls(
+mainContainer,
+number,
+currentMode==='thai'
+?
+'bg-gradient-to-br from-emerald-500 to-teal-700'
+:
+'bg-gradient-to-br from-red-500 to-rose-700'
+);
+
+renderBalls(
+threeContainer,
+three,
+'bg-gradient-to-br from-violet-500 to-indigo-700'
+);
+
+renderBalls(
+twoContainer,
+two,
+'bg-gradient-to-br from-blue-500 to-cyan-700'
+);
+
+renderBalls(
+bottomContainer,
+bottom,
+'bg-gradient-to-br from-yellow-500 to-orange-600'
+);
+
+const confidence=
+calculateConfidence(number);
+
+document.getElementById('scoreText')
+.innerText=
+confidence+'%';
+
+document.getElementById('scoreBar')
+.style.width=
+confidence+'%';
+
+generateBtn.innerText=
+'🚀 วิเคราะห์เลข';
+
+},1200);
+
+}
+
+/* =========================================
+   MODE SWITCH
+========================================= */
+
 thaiBtn.onclick=()=>{
 
-  currentMode='thai';
+currentMode='thai';
 
-  thaiBtn.className=
-  'flex-1 bg-emerald-600 py-3 rounded-xl font-bold';
+thaiBtn.className=
+'flex-1 bg-emerald-600 py-3 rounded-xl font-bold';
 
-  laoBtn.className=
-  'flex-1 bg-slate-800 py-3 rounded-xl font-bold';
+laoBtn.className=
+'flex-1 bg-slate-800 py-3 rounded-xl font-bold';
 
-  renderHistory();
-  renderHeatmap();
+renderHistory();
+renderHeatmap();
+renderPairs();
 
 };
 
 laoBtn.onclick=()=>{
 
-  currentMode='lao';
+currentMode='lao';
 
-  laoBtn.className=
-  'flex-1 bg-red-600 py-3 rounded-xl font-bold';
+laoBtn.className=
+'flex-1 bg-red-600 py-3 rounded-xl font-bold';
 
-  thaiBtn.className=
-  'flex-1 bg-slate-800 py-3 rounded-xl font-bold';
-
-  renderHistory();
-  renderHeatmap();
-
-};
+thaiBtn.className=
+'flex-1 bg-slate-800 py-3 rounded-xl font-bold';
 
 renderHistory();
 renderHeatmap();
+renderPairs();
 
-generateBtn.onclick=generateAI;
+};
+
+/* =========================================
+   INIT
+========================================= */
+
+renderHistory();
+renderHeatmap();
+renderPairs();
+
+generateBtn.onclick=
+generateAI;
 
 </script>
 
