@@ -1,13 +1,22 @@
+<!-- =========================
+ TURBO LOTTO AI REALTIME
+ VERSION: FIREBASE REALTIME
+========================= -->
+
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
+<meta
+name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>Turbo Lotto AI Ultimate</title>
+<title>
+Turbo Lotto AI Realtime
+</title>
 
 <!-- FONT -->
 
@@ -18,346 +27,102 @@ href="https://fonts.googleapis.com">
 href="https://fonts.gstatic.com"
 crossorigin>
 
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700&display=swap"
+<link
+href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700&display=swap"
 rel="stylesheet">
 
 <!-- TAILWIND -->
 
 <script src="https://cdn.tailwindcss.com"></script>
 
-<!-- TENSORFLOW -->
+<!-- TFJS -->
 
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script defer
+src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs">
+</script>
 
-<style>
+<!-- FIREBASE -->
 
-body{
+<script type="module">
 
-  background:#020617;
+import {
+initializeApp
+}
+from
+'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 
-  color:white;
+import {
 
-  font-family:'Kanit',sans-serif;
+getDatabase,
+ref,
+set,
+get,
+child,
+onValue
 
 }
-
-.glass{
-
-  background:rgba(255,255,255,.05);
-
-  backdrop-filter:blur(14px);
-
-  border:1px solid rgba(255,255,255,.08);
-
-}
-
-.ball{
-
-  width:68px;
-
-  height:68px;
-
-  border-radius:999px;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
-
-  font-size:28px;
-
-  font-weight:bold;
-
-  color:white;
-
-  animation:pop .35s ease;
-
-}
-
-@keyframes pop{
-
-  0%{
-
-    transform:scale(.4);
-
-    opacity:0;
-
-  }
-
-  100%{
-
-    transform:scale(1);
-
-    opacity:1;
-
-  }
-
-}
-
-.loading{
-
-  animation:pulse 1s infinite;
-
-}
-
-.card{
-
-  background:#0f172a;
-
-  border-radius:18px;
-
-  padding:14px;
-
-}
-
-.bar{
-
-  height:18px;
-
-  border-radius:999px;
-
-  transition:.5s;
-
-}
-
-.small{
-
-  font-size:12px;
-
-}
-
-</style>
-
-</head>
-
-<body class="min-h-screen p-4">
-
-<div class="max-w-md mx-auto">
-
-<div class="glass rounded-3xl p-5 shadow-2xl">
-
-<!-- TITLE -->
-
-<h1 class="text-3xl font-bold text-center mb-2">
-
-🎯 Turbo Lotto AI
-
-</h1>
-
-<p class="text-center text-cyan-400 mb-6">
-
-Ultimate Neural Engine
-
-</p>
-
-<!-- MODE -->
-
-<div class="flex gap-3 mb-6">
-
-<button
-id="thaiBtn"
-class="flex-1 bg-emerald-600 py-3 rounded-xl font-bold">
-
-🇹🇭 หวยไทย
-
-</button>
-
-<button
-id="laoBtn"
-class="flex-1 bg-slate-800 py-3 rounded-xl font-bold">
-
-🇱🇦 หวยลาว
-
-</button>
-
-</div>
-
-<!-- GENERATE -->
-
-<button
-id="generateBtn"
-class="w-full bg-gradient-to-r from-violet-600 to-indigo-600 py-4 rounded-2xl font-bold text-lg mb-6">
-
-🚀 วิเคราะห์ด้วย AI
-
-</button>
-
-<!-- STATUS -->
-
-<div class="glass rounded-2xl p-4 mb-6">
-
-<div class="flex justify-between">
-
-<span>
-
-AI STATUS
-
-</span>
-
-<span
-id="aiStatus"
-class="text-yellow-400">
-
-กำลังโหลด...
-
-</span>
-
-</div>
-
-</div>
-
-<!-- MAIN -->
-
-<div class="mb-6">
-
-<h2 class="font-bold mb-3">
-
-รางวัลหลัก
-
-</h2>
-
-<div
-id="mainContainer"
-class="flex justify-center gap-2 flex-wrap">
-</div>
-
-</div>
-
-<!-- 3 DIGIT -->
-
-<div class="mb-6">
-
-<h2 class="font-bold mb-3">
-
-3 ตัวท้าย
-
-</h2>
-
-<div
-id="threeContainer"
-class="flex justify-center gap-2 flex-wrap">
-</div>
-
-</div>
-
-<!-- 2 DIGIT -->
-
-<div class="mb-6">
-
-<h2 class="font-bold mb-3">
-
-2 ตัวท้าย
-
-</h2>
-
-<div
-id="twoContainer"
-class="flex justify-center gap-2 flex-wrap">
-</div>
-
-</div>
-
-<!-- BOTTOM -->
-
-<div class="mb-6">
-
-<h2 class="font-bold mb-3 text-yellow-400">
-
-2 ตัวล่าง
-
-</h2>
-
-<div
-id="bottomContainer"
-class="flex justify-center gap-2 flex-wrap">
-</div>
-
-</div>
-
-<!-- CONFIDENCE -->
-
-<div class="glass rounded-2xl p-4 mb-6">
-
-<div class="flex justify-between mb-2">
-
-<span>
-
-AI Confidence
-
-</span>
-
-<span id="scoreText">
-
-0%
-
-</span>
-
-</div>
-
-<div class="w-full bg-slate-800 rounded-full overflow-hidden">
-
-<div
-id="scoreBar"
-class="bar bg-gradient-to-r from-emerald-500 to-cyan-500 w-0">
-</div>
-
-</div>
-
-</div>
-
-<!-- HOT DIGITS -->
-
-<div class="glass rounded-2xl p-4 mb-6">
-
-<h2 class="font-bold mb-4">
-
-🔥 Hot Digits
-
-</h2>
-
-<div
-id="hotDigits"
-class="grid grid-cols-5 gap-2">
-</div>
-
-</div>
-
-<!-- HISTORY -->
-
-<div class="glass rounded-2xl p-4">
-
-<h2 class="font-bold mb-4">
-
-📁 ผลย้อนหลังจริง
-
-</h2>
-
-<div
-id="historyContainer"
-class="space-y-3">
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<script>
+from
+'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
 
 /* =========================
-   GLOBAL
+ FIREBASE CONFIG
 ========================= */
 
-let currentMode='thai';
+const firebaseConfig = {
 
-let aiModel=null;
+apiKey:
+"YOUR_API_KEY",
 
-let isTraining=false;
+authDomain:
+"YOUR_PROJECT.firebaseapp.com",
+
+databaseURL:
+"https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+
+projectId:
+"YOUR_PROJECT",
+
+storageBucket:
+"YOUR_PROJECT.appspot.com",
+
+messagingSenderId:
+"123456",
+
+appId:
+"APP_ID"
+
+};
 
 /* =========================
-   ELEMENTS
+ INIT FIREBASE
+========================= */
+
+const app=
+initializeApp(firebaseConfig);
+
+const db=
+getDatabase(app);
+
+/* =========================
+ GLOBAL
+========================= */
+
+window.historyData={
+
+thai:[],
+
+lao:[]
+
+};
+
+window.currentMode='thai';
+
+window.aiModel=null;
+
+window.isTraining=false;
+
+/* =========================
+ ELEMENTS
 ========================= */
 
 const thaiBtn=
@@ -368,6 +133,9 @@ document.getElementById('laoBtn');
 
 const generateBtn=
 document.getElementById('generateBtn');
+
+const historyContainer=
+document.getElementById('historyContainer');
 
 const mainContainer=
 document.getElementById('mainContainer');
@@ -381,81 +149,52 @@ document.getElementById('twoContainer');
 const bottomContainer=
 document.getElementById('bottomContainer');
 
-const historyContainer=
-document.getElementById('historyContainer');
-
-const hotDigitsContainer=
+const hotDigits=
 document.getElementById('hotDigits');
 
 const aiStatus=
 document.getElementById('aiStatus');
 
 /* =========================
-   DATABASE
+ FIREBASE LOAD
 ========================= */
 
-const historyData={
+async function loadRealtimeData(){
 
-thai:[],
+onValue(
 
-lao:[
+ref(db,'lotto'),
 
-{date:'20 พ.ค.',main:'6384'},
-{date:'18 พ.ค.',main:'4127'},
-{date:'16 พ.ค.',main:'9751'},
-{date:'14 พ.ค.',main:'1843'},
-{date:'12 พ.ค.',main:'7218'},
-{date:'10 พ.ค.',main:'3405'},
-{date:'8 พ.ค.',main:'6651'}
+(snapshot)=>{
 
-]
+const data=
+snapshot.val();
 
-};
-
-/* =========================
-   SAVE
-========================= */
-
-function saveData(){
-
-localStorage.setItem(
-'lotto-ai-data',
-JSON.stringify(historyData)
-);
-
-}
-
-/* =========================
-   LOAD
-========================= */
-
-function loadData(){
-
-const saved=
-localStorage.getItem(
-'lotto-ai-data'
-);
-
-if(saved){
-
-const parsed=
-JSON.parse(saved);
+if(data){
 
 historyData.thai=
-parsed.thai || [];
+data.thai || [];
 
 historyData.lao=
-parsed.lao || historyData.lao;
+data.lao || [];
+
+renderHistory();
+
+renderHotDigits();
 
 }
+
+}
+
+);
 
 }
 
 /* =========================
-   FETCH THAI REAL DATA
+ AUTO FETCH THAI
 ========================= */
 
-async function fetchThaiHistory(){
+async function fetchThai(){
 
 try{
 
@@ -497,9 +236,11 @@ if(!exists){
 historyData.thai.unshift(result);
 
 historyData.thai=
-historyData.thai.slice(0,100);
+historyData.thai.slice(0,500);
 
-saveData();
+saveRealtime();
+
+await retrainAI();
 
 }
 
@@ -512,7 +253,79 @@ console.log(error);
 }
 
 /* =========================
-   HOT DIGITS
+ AUTO FETCH LAO
+========================= */
+
+async function fetchLao(){
+
+try{
+
+const response=
+await fetch(
+'https://YOUR-LAO-API.com/latest'
+);
+
+const data=
+await response.json();
+
+const result={
+
+date:data.date,
+
+main:data.number
+
+};
+
+const exists=
+historyData.lao.some(
+x=>x.date===result.date
+);
+
+if(!exists){
+
+historyData.lao.unshift(result);
+
+historyData.lao=
+historyData.lao.slice(0,500);
+
+saveRealtime();
+
+await retrainAI();
+
+}
+
+}catch(error){
+
+console.log(error);
+
+}
+
+}
+
+/* =========================
+ SAVE FIREBASE
+========================= */
+
+async function saveRealtime(){
+
+await set(
+
+ref(db,'lotto'),
+
+{
+
+thai:historyData.thai,
+
+lao:historyData.lao
+
+}
+
+);
+
+}
+
+/* =========================
+ HOT DIGITS
 ========================= */
 
 function getHotDigits(){
@@ -548,12 +361,12 @@ return Object.entries(freq)
 }
 
 /* =========================
-   RENDER HOT
+ RENDER HOT
 ========================= */
 
 function renderHotDigits(){
 
-hotDigitsContainer.innerHTML='';
+hotDigits.innerHTML='';
 
 const hot=
 getHotDigits();
@@ -574,7 +387,7 @@ ${item[0]}
 
 </div>
 
-<div class="small text-slate-400">
+<div class="text-xs text-slate-400">
 
 score ${item[1]}
 
@@ -582,14 +395,14 @@ score ${item[1]}
 
 `;
 
-hotDigitsContainer.appendChild(div);
+hotDigits.appendChild(div);
 
 });
 
 }
 
 /* =========================
-   HISTORY
+ HISTORY
 ========================= */
 
 function renderHistory(){
@@ -602,7 +415,8 @@ historyData[currentMode]
 const div=
 document.createElement('div');
 
-div.className='card';
+div.className=
+'bg-slate-900 rounded-2xl p-4';
 
 if(currentMode==='thai'){
 
@@ -610,21 +424,21 @@ div.innerHTML=`
 
 <div class="flex justify-between">
 
-<span class="text-emerald-400 small">
+<span class="text-emerald-400 text-xs">
 
 ${item.date}
 
 </span>
 
-<span class="text-yellow-400 small">
+<span class="text-yellow-400 text-xs">
 
-ล่าง ${item.bottom}
+ ${item.bottom}
 
 </span>
 
 </div>
 
-<div class="text-2xl font-bold mt-2 tracking-widest">
+<div class="text-2xl font-bold mt-2">
 
 ${item.main}
 
@@ -644,7 +458,7 @@ div.innerHTML=`
 
 <div class="flex justify-between">
 
-<span class="text-red-400 small">
+<span class="text-red-400 text-xs">
 
 ${item.date}
 
@@ -652,15 +466,15 @@ ${item.date}
 
 </div>
 
-<div class="text-2xl font-bold mt-2 tracking-widest">
+<div class="text-2xl font-bold mt-2">
 
 ${item.main}
 
 </div>
 
-<div class="small text-slate-400 mt-2">
+<div class="text-xs text-slate-400 mt-2">
 
-บน ${top} | ล่าง ${bottom}
+ ${top} |  ${bottom}
 
 </div>
 
@@ -675,7 +489,7 @@ historyContainer.appendChild(div);
 }
 
 /* =========================
-   NORMALIZE
+ NORMALIZE
 ========================= */
 
 function normalize(num){
@@ -691,7 +505,7 @@ return Math.round(num*9);
 }
 
 /* =========================
-   DATASET
+ DATASET
 ========================= */
 
 function createDataset(){
@@ -716,7 +530,7 @@ return dataset;
 }
 
 /* =========================
-   TRAINING DATA
+ TRAIN DATA
 ========================= */
 
 function prepareTrainingData(){
@@ -750,10 +564,10 @@ ys:tf.tensor2d(ys)
 }
 
 /* =========================
-   CREATE MODEL
+ CREATE MODEL
 ========================= */
 
-async function createAIModel(){
+async function createModel(){
 
 const inputSize=
 currentMode==='thai'
@@ -798,14 +612,6 @@ activation:'relu'
 
 aiModel.add(
 
-tf.layers.dropout({
-rate:.2
-})
-
-);
-
-aiModel.add(
-
 tf.layers.dense({
 
 units:32,
@@ -832,57 +638,17 @@ aiModel.compile({
 
 optimizer:'adam',
 
-loss:'meanSquaredError',
-
-metrics:['mse']
+loss:'meanSquaredError'
 
 });
 
 }
 
 /* =========================
-   SAVE MODEL
+ TRAIN AI
 ========================= */
 
-async function saveModel(){
-
-await aiModel.save(
-'localstorage://turbo-lotto-ai'
-);
-
-}
-
-/* =========================
-   LOAD MODEL
-========================= */
-
-async function loadModel(){
-
-try{
-
-aiModel=
-await tf.loadLayersModel(
-'localstorage://turbo-lotto-ai'
-);
-
-aiStatus.innerText=
-'AI Ready';
-
-return true;
-
-}catch{
-
-return false;
-
-}
-
-}
-
-/* =========================
-   TRAIN AI
-========================= */
-
-async function trainAI(){
+async function retrainAI(){
 
 if(isTraining){
 
@@ -893,9 +659,6 @@ return;
 if(historyData[currentMode]
 .length<5){
 
-aiStatus.innerText=
-'ข้อมูลน้อยเกินไป';
-
 return;
 
 }
@@ -903,12 +666,12 @@ return;
 isTraining=true;
 
 aiStatus.innerText=
-'กำลังเทรน AI...';
+'Training AI...';
 
 const data=
 prepareTrainingData();
 
-await createAIModel();
+await createModel();
 
 await aiModel.fit(
 
@@ -918,43 +681,28 @@ data.ys,
 
 {
 
-epochs:50,
+epochs:40,
 
 shuffle:true,
 
-validationSplit:.2,
-
-callbacks:{
-
-onEpochEnd:(epoch)=>{
-
-aiStatus.innerText=
-
-'Training '
-+(epoch+1);
-
-}
-
-}
+validationSplit:.2
 
 }
 
 );
 
-await saveModel();
-
 data.xs.dispose();
 data.ys.dispose();
 
 aiStatus.innerText=
-'AI พร้อมใช้งาน';
+'AI Ready';
 
 isTraining=false;
 
 }
 
 /* =========================
-   PREDICT
+ PREDICT
 ========================= */
 
 async function predictAI(){
@@ -995,37 +743,7 @@ return result;
 }
 
 /* =========================
-   CONFIDENCE
-========================= */
-
-function calculateConfidence(number){
-
-let score=0;
-
-const hot=
-getHotDigits();
-
-number.split('')
-.forEach(digit=>{
-
-hot.forEach(h=>{
-
-if(h[0]===digit){
-
-score+=18;
-
-}
-
-});
-
-});
-
-return Math.min(score,98);
-
-}
-
-/* =========================
-   BALLS
+ BALLS
 ========================= */
 
 function renderBalls(
@@ -1054,22 +772,7 @@ container.appendChild(div);
 }
 
 /* =========================
-   RANDOM
-========================= */
-
-function secureRandom(max){
-
-const arr=
-new Uint32Array(1);
-
-crypto.getRandomValues(arr);
-
-return arr[0]%max;
-
-}
-
-/* =========================
-   GENERATE
+ GENERATE
 ========================= */
 
 async function generateAI(){
@@ -1083,24 +786,7 @@ return;
 generateBtn.disabled=true;
 
 generateBtn.innerText=
-'AI กำลังวิเคราะห์...';
-
-const loading=
-`<div class="ball loading bg-slate-700">⚡</div>`;
-
-mainContainer.innerHTML=
-loading;
-
-threeContainer.innerHTML=
-loading;
-
-twoContainer.innerHTML=
-loading;
-
-bottomContainer.innerHTML=
-loading;
-
-setTimeout(async()=>{
+'...';
 
 const number=
 await predictAI();
@@ -1116,12 +802,11 @@ let bottom='';
 if(currentMode==='thai'){
 
 bottom=
-String(
-secureRandom(10)
-)+
-String(
-secureRandom(10)
-);
+Math.floor(Math.random()*10)
++
+''
++
+Math.floor(Math.random()*10);
 
 }else{
 
@@ -1133,11 +818,7 @@ number.slice(0,2);
 renderBalls(
 mainContainer,
 number,
-currentMode==='thai'
-?
 'bg-gradient-to-br from-emerald-500 to-teal-700'
-:
-'bg-gradient-to-br from-red-500 to-rose-700'
 );
 
 renderBalls(
@@ -1149,7 +830,7 @@ three,
 renderBalls(
 twoContainer,
 two,
-'bg-gradient-to-br from-blue-500 to-cyan-700'
+'bg-gradient-to-br from-cyan-500 to-blue-700'
 );
 
 renderBalls(
@@ -1158,41 +839,20 @@ bottom,
 'bg-gradient-to-br from-yellow-500 to-orange-600'
 );
 
-const score=
-calculateConfidence(number);
-
-document
-.getElementById('scoreText')
-.innerText=
-score+'%';
-
-document
-.getElementById('scoreBar')
-.style.width=
-score+'%';
-
 generateBtn.disabled=false;
 
 generateBtn.innerText=
-'🚀 วิเคราะห์ด้วย AI';
-
-},1200);
+'  AI';
 
 }
 
 /* =========================
-   MODE
+ MODE
 ========================= */
 
 thaiBtn.onclick=()=>{
 
 currentMode='thai';
-
-thaiBtn.className=
-'flex-1 bg-emerald-600 py-3 rounded-xl font-bold';
-
-laoBtn.className=
-'flex-1 bg-slate-800 py-3 rounded-xl font-bold';
 
 renderHistory();
 
@@ -1204,12 +864,6 @@ laoBtn.onclick=()=>{
 
 currentMode='lao';
 
-laoBtn.className=
-'flex-1 bg-red-600 py-3 rounded-xl font-bold';
-
-thaiBtn.className=
-'flex-1 bg-slate-800 py-3 rounded-xl font-bold';
-
 renderHistory();
 
 renderHotDigits();
@@ -1217,36 +871,228 @@ renderHotDigits();
 };
 
 /* =========================
-   INIT
+ AUTO UPDATE
 ========================= */
 
-async function init(){
+setInterval(()=>{
 
-loadData();
+fetchThai();
 
-await fetchThaiHistory();
+fetchLao();
 
-renderHistory();
+},300000);
 
-renderHotDigits();
+/* =========================
+ INIT
+========================= */
 
-const loaded=
-await loadModel();
+window.onload=async()=>{
 
-if(!loaded){
+await loadRealtimeData();
 
-await trainAI();
+await fetchThai();
 
-}
+await fetchLao();
+
+await retrainAI();
 
 generateBtn.onclick=
 generateAI;
 
-}
-
-init();
+};
 
 </script>
 
+<style>
+
+body{
+
+background:#020617;
+color:white;
+font-family:'Kanit',sans-serif;
+
+}
+
+.ball{
+
+width:68px;
+height:68px;
+
+border-radius:999px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:28px;
+font-weight:bold;
+
+color:white;
+
+}
+
+</style>
+
+</head>
+
+<body class="min-h-screen p-4">
+
+<div class="max-w-md mx-auto">
+
+<div class="bg-slate-900 rounded-3xl p-5">
+
+<h1 class="text-3xl font-bold text-center mb-2">
+
+ Turbo Lotto AI
+
+</h1>
+
+<p class="text-center text-cyan-400 mb-6">
+
+Realtime Firebase Edition
+
+</p>
+
+<div class="flex gap-3 mb-6">
+
+<button
+id="thaiBtn"
+class="flex-1 bg-emerald-600 py-3 rounded-xl font-bold">
+
+ 
+
+</button>
+
+<button
+id="laoBtn"
+class="flex-1 bg-red-600 py-3 rounded-xl font-bold">
+
+ 
+
+</button>
+
+</div>
+
+<button
+id="generateBtn"
+class="w-full bg-gradient-to-r from-violet-600 to-indigo-600 py-4 rounded-2xl font-bold mb-6">
+
+  AI
+
+</button>
+
+<div class="mb-6">
+
+<div class="flex justify-between">
+
+<span>
+AI STATUS
+</span>
+
+<span id="aiStatus">
+
+Loading...
+
+</span>
+
+</div>
+
+</div>
+
+<div class="mb-6">
+
+<h2 class="font-bold mb-3">
+
+
+
+</h2>
+
+<div
+id="mainContainer"
+class="flex justify-center gap-2 flex-wrap">
+</div>
+
+</div>
+
+<div class="mb-6">
+
+<h2 class="font-bold mb-3">
+
+3 
+
+</h2>
+
+<div
+id="threeContainer"
+class="flex justify-center gap-2 flex-wrap">
+</div>
+
+</div>
+
+<div class="mb-6">
+
+<h2 class="font-bold mb-3">
+
+2 
+
+</h2>
+
+<div
+id="twoContainer"
+class="flex justify-center gap-2 flex-wrap">
+</div>
+
+</div>
+
+<div class="mb-6">
+
+<h2 class="font-bold mb-3 text-yellow-400">
+
+2 
+
+</h2>
+
+<div
+id="bottomContainer"
+class="flex justify-center gap-2 flex-wrap">
+</div>
+
+</div>
+
+<div class="mb-6">
+
+<h2 class="font-bold mb-3">
+
+ Hot Digits
+
+</h2>
+
+<div
+id="hotDigits"
+class="grid grid-cols-5 gap-2">
+</div>
+
+</div>
+
+<div>
+
+<h2 class="font-bold mb-3">
+
+ Realtime History
+
+</h2>
+
+<div
+id="historyContainer"
+class="space-y-3">
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </body>
+
 </html>
