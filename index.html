@@ -9,75 +9,122 @@ content="width=device-width, initial-scale=1.0">
 
 <title>Turbo Lotto AI Ultimate</title>
 
+<!-- FONT -->
+
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700&display=swap"
+rel="stylesheet">
+
+<!-- TAILWIND -->
+
 <script src="https://cdn.tailwindcss.com"></script>
+
+<!-- TENSORFLOW -->
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 
 <style>
 
 body{
+
   background:#020617;
+
   color:white;
-  font-family:sans-serif;
+
+  font-family:'Kanit',sans-serif;
+
 }
 
 .glass{
+
   background:rgba(255,255,255,.05);
+
   backdrop-filter:blur(14px);
+
   border:1px solid rgba(255,255,255,.08);
+
 }
 
 .ball{
 
   width:68px;
+
   height:68px;
 
   border-radius:999px;
 
   display:flex;
+
   align-items:center;
+
   justify-content:center;
 
   font-size:28px;
+
   font-weight:bold;
 
   color:white;
 
   animation:pop .35s ease;
+
 }
 
 @keyframes pop{
 
   0%{
+
     transform:scale(.4);
+
     opacity:0;
+
   }
 
   100%{
+
     transform:scale(1);
+
     opacity:1;
+
   }
 
 }
 
 .loading{
+
   animation:pulse 1s infinite;
+
 }
 
 .card{
+
   background:#0f172a;
+
   border-radius:18px;
+
   padding:14px;
+
 }
 
 .bar{
+
   height:18px;
+
   border-radius:999px;
+
   transition:.5s;
+
 }
 
 .small{
+
   font-size:12px;
+
 }
 
 </style>
@@ -94,7 +141,7 @@ body{
 
 <h1 class="text-3xl font-bold text-center mb-2">
 
- Turbo Lotto AI
+🎯 Turbo Lotto AI
 
 </h1>
 
@@ -112,7 +159,7 @@ Ultimate Neural Engine
 id="thaiBtn"
 class="flex-1 bg-emerald-600 py-3 rounded-xl font-bold">
 
- 
+🇹🇭 หวยไทย
 
 </button>
 
@@ -120,7 +167,7 @@ class="flex-1 bg-emerald-600 py-3 rounded-xl font-bold">
 id="laoBtn"
 class="flex-1 bg-slate-800 py-3 rounded-xl font-bold">
 
- 
+🇱🇦 หวยลาว
 
 </button>
 
@@ -132,7 +179,7 @@ class="flex-1 bg-slate-800 py-3 rounded-xl font-bold">
 id="generateBtn"
 class="w-full bg-gradient-to-r from-violet-600 to-indigo-600 py-4 rounded-2xl font-bold text-lg mb-6">
 
-  AI
+🚀 วิเคราะห์ด้วย AI
 
 </button>
 
@@ -143,14 +190,16 @@ class="w-full bg-gradient-to-r from-violet-600 to-indigo-600 py-4 rounded-2xl fo
 <div class="flex justify-between">
 
 <span>
+
 AI STATUS
+
 </span>
 
 <span
 id="aiStatus"
 class="text-yellow-400">
 
-Loading...
+กำลังโหลด...
 
 </span>
 
@@ -164,7 +213,7 @@ Loading...
 
 <h2 class="font-bold mb-3">
 
-
+รางวัลหลัก
 
 </h2>
 
@@ -181,7 +230,7 @@ class="flex justify-center gap-2 flex-wrap">
 
 <h2 class="font-bold mb-3">
 
-3 
+3 ตัวท้าย
 
 </h2>
 
@@ -198,7 +247,7 @@ class="flex justify-center gap-2 flex-wrap">
 
 <h2 class="font-bold mb-3">
 
-2 
+2 ตัวท้าย
 
 </h2>
 
@@ -215,7 +264,7 @@ class="flex justify-center gap-2 flex-wrap">
 
 <h2 class="font-bold mb-3 text-yellow-400">
 
-2 
+2 ตัวล่าง
 
 </h2>
 
@@ -233,11 +282,15 @@ class="flex justify-center gap-2 flex-wrap">
 <div class="flex justify-between mb-2">
 
 <span>
+
 AI Confidence
+
 </span>
 
 <span id="scoreText">
+
 0%
+
 </span>
 
 </div>
@@ -259,7 +312,7 @@ class="bar bg-gradient-to-r from-emerald-500 to-cyan-500 w-0">
 
 <h2 class="font-bold mb-4">
 
- Hot Digits
+🔥 Hot Digits
 
 </h2>
 
@@ -276,7 +329,7 @@ class="grid grid-cols-5 gap-2">
 
 <h2 class="font-bold mb-4">
 
- 
+📁 ผลย้อนหลังจริง
 
 </h2>
 
@@ -293,9 +346,9 @@ class="space-y-3">
 
 <script>
 
-/* =========================================
+/* =========================
    GLOBAL
-========================================= */
+========================= */
 
 let currentMode='thai';
 
@@ -303,9 +356,9 @@ let aiModel=null;
 
 let isTraining=false;
 
-/* =========================================
+/* =========================
    ELEMENTS
-========================================= */
+========================= */
 
 const thaiBtn=
 document.getElementById('thaiBtn');
@@ -337,9 +390,9 @@ document.getElementById('hotDigits');
 const aiStatus=
 document.getElementById('aiStatus');
 
-/* =========================================
+/* =========================
    DATABASE
-========================================= */
+========================= */
 
 const historyData={
 
@@ -347,21 +400,21 @@ thai:[],
 
 lao:[
 
-{date:'20 ..',main:'6384'},
-{date:'18 ..',main:'4127'},
-{date:'16 ..',main:'9751'},
-{date:'14 ..',main:'1843'},
-{date:'12 ..',main:'7218'},
-{date:'10 ..',main:'3405'},
-{date:'8 ..',main:'6651'}
+{date:'20 พ.ค.',main:'6384'},
+{date:'18 พ.ค.',main:'4127'},
+{date:'16 พ.ค.',main:'9751'},
+{date:'14 พ.ค.',main:'1843'},
+{date:'12 พ.ค.',main:'7218'},
+{date:'10 พ.ค.',main:'3405'},
+{date:'8 พ.ค.',main:'6651'}
 
 ]
 
 };
 
-/* =========================================
+/* =========================
    SAVE
-========================================= */
+========================= */
 
 function saveData(){
 
@@ -372,9 +425,9 @@ JSON.stringify(historyData)
 
 }
 
-/* =========================================
+/* =========================
    LOAD
-========================================= */
+========================= */
 
 function loadData(){
 
@@ -398,9 +451,9 @@ parsed.lao || historyData.lao;
 
 }
 
-/* =========================================
-   FETCH THAI
-========================================= */
+/* =========================
+   FETCH THAI REAL DATA
+========================= */
 
 async function fetchThaiHistory(){
 
@@ -458,9 +511,9 @@ console.log(error);
 
 }
 
-/* =========================================
+/* =========================
    HOT DIGITS
-========================================= */
+========================= */
 
 function getHotDigits(){
 
@@ -494,9 +547,9 @@ return Object.entries(freq)
 
 }
 
-/* =========================================
+/* =========================
    RENDER HOT
-========================================= */
+========================= */
 
 function renderHotDigits(){
 
@@ -535,9 +588,9 @@ hotDigitsContainer.appendChild(div);
 
 }
 
-/* =========================================
+/* =========================
    HISTORY
-========================================= */
+========================= */
 
 function renderHistory(){
 
@@ -565,7 +618,7 @@ ${item.date}
 
 <span class="text-yellow-400 small">
 
- ${item.bottom}
+ล่าง ${item.bottom}
 
 </span>
 
@@ -607,7 +660,7 @@ ${item.main}
 
 <div class="small text-slate-400 mt-2">
 
- ${top} |  ${bottom}
+บน ${top} | ล่าง ${bottom}
 
 </div>
 
@@ -621,9 +674,9 @@ historyContainer.appendChild(div);
 
 }
 
-/* =========================================
+/* =========================
    NORMALIZE
-========================================= */
+========================= */
 
 function normalize(num){
 
@@ -637,9 +690,9 @@ return Math.round(num*9);
 
 }
 
-/* =========================================
+/* =========================
    DATASET
-========================================= */
+========================= */
 
 function createDataset(){
 
@@ -662,9 +715,9 @@ return dataset;
 
 }
 
-/* =========================================
+/* =========================
    TRAINING DATA
-========================================= */
+========================= */
 
 function prepareTrainingData(){
 
@@ -696,9 +749,9 @@ ys:tf.tensor2d(ys)
 
 }
 
-/* =========================================
+/* =========================
    CREATE MODEL
-========================================= */
+========================= */
 
 async function createAIModel(){
 
@@ -787,9 +840,9 @@ metrics:['mse']
 
 }
 
-/* =========================================
+/* =========================
    SAVE MODEL
-========================================= */
+========================= */
 
 async function saveModel(){
 
@@ -799,9 +852,9 @@ await aiModel.save(
 
 }
 
-/* =========================================
+/* =========================
    LOAD MODEL
-========================================= */
+========================= */
 
 async function loadModel(){
 
@@ -813,7 +866,7 @@ await tf.loadLayersModel(
 );
 
 aiStatus.innerText=
-'AI Loaded';
+'AI Ready';
 
 return true;
 
@@ -825,9 +878,9 @@ return false;
 
 }
 
-/* =========================================
+/* =========================
    TRAIN AI
-========================================= */
+========================= */
 
 async function trainAI(){
 
@@ -841,7 +894,7 @@ if(historyData[currentMode]
 .length<5){
 
 aiStatus.innerText=
-'';
+'ข้อมูลน้อยเกินไป';
 
 return;
 
@@ -850,7 +903,7 @@ return;
 isTraining=true;
 
 aiStatus.innerText=
-'Training...';
+'กำลังเทรน AI...';
 
 const data=
 prepareTrainingData();
@@ -894,15 +947,15 @@ data.xs.dispose();
 data.ys.dispose();
 
 aiStatus.innerText=
-'AI Ready';
+'AI พร้อมใช้งาน';
 
 isTraining=false;
 
 }
 
-/* =========================================
+/* =========================
    PREDICT
-========================================= */
+========================= */
 
 async function predictAI(){
 
@@ -941,9 +994,9 @@ return result;
 
 }
 
-/* =========================================
+/* =========================
    CONFIDENCE
-========================================= */
+========================= */
 
 function calculateConfidence(number){
 
@@ -971,9 +1024,9 @@ return Math.min(score,98);
 
 }
 
-/* =========================================
+/* =========================
    BALLS
-========================================= */
+========================= */
 
 function renderBalls(
 container,
@@ -1000,9 +1053,9 @@ container.appendChild(div);
 
 }
 
-/* =========================================
+/* =========================
    RANDOM
-========================================= */
+========================= */
 
 function secureRandom(max){
 
@@ -1015,9 +1068,9 @@ return arr[0]%max;
 
 }
 
-/* =========================================
+/* =========================
    GENERATE
-========================================= */
+========================= */
 
 async function generateAI(){
 
@@ -1030,10 +1083,10 @@ return;
 generateBtn.disabled=true;
 
 generateBtn.innerText=
-'AI ...';
+'AI กำลังวิเคราะห์...';
 
 const loading=
-`<div class="ball loading bg-slate-700"></div>`;
+`<div class="ball loading bg-slate-700">⚡</div>`;
 
 mainContainer.innerHTML=
 loading;
@@ -1121,15 +1174,15 @@ score+'%';
 generateBtn.disabled=false;
 
 generateBtn.innerText=
-'  AI';
+'🚀 วิเคราะห์ด้วย AI';
 
 },1200);
 
 }
 
-/* =========================================
+/* =========================
    MODE
-========================================= */
+========================= */
 
 thaiBtn.onclick=()=>{
 
@@ -1163,9 +1216,9 @@ renderHotDigits();
 
 };
 
-/* =========================================
+/* =========================
    INIT
-========================================= */
+========================= */
 
 async function init(){
 
