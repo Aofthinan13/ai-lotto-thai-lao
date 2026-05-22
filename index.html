@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Turbo Lotto AI</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body{
+  background:#020617;
+  color:white;
+  font-family:sans-serif;
+}
+
+.glass{
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.ball{
+  width:70px;
+  height:70px;
+  border-radius:999px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  font-weight:bold;
+  color:white;
+  animation:pop .4s ease;
+}
+
+@keyframes pop{
+  0%{
+    transform:scale(.5);
+    opacity:0;
+  }
+  100%{
+    transform:scale(1);
+    opacity:1;
+  }
+}
+
+.bar{
+  height:20px;
+  border-radius:999px;
+  background:linear-gradient(to right,#10b981,#14b8a6);
+}
+
+.loading{
+  animation:pulse 1s infinite;
+}
+</style>
+</head>
+
+<body class="min-h-screen p-4">
+
+<div class="max-w-md mx-auto">
+
+<div class="glass rounded-3xl p-5 shadow-2xl">
+
+<h1 class="text-3xl font-bold text-center mb-2">
+🎯 Turbo Lotto AI
+</h1>
+
+<p class="text-center text-emerald-400 mb-6">
+AI วิเคราะห์เลขเด่น
+</p>
+
+<button
+id="generateBtn"
+class="w-full bg-gradient-to-r from-emerald-500 to-teal-700 py-4 rounded-2xl font-bold text-lg mb-6">
+🚀 วิเคราะห์เลข
+</button>
+
+<!-- MAIN -->
+
+<div class="mb-6">
+
+<h2 class="font-bold mb-3 text-slate-300">
+รางวัลหลัก
+</h2>
+
+<div
+id="mainContainer"
+class="flex justify-center gap-2 flex-wrap">
+</div>
+
+</div>
+
+<!-- TOP 3 -->
+
+<div class="mb-6">
+
+<h2 class="font-bold mb-3 text-slate-300">
+3 ตัวท้าย
+</h2>
+
+<div
+id="top3Container"
+class="flex justify-center gap-2 flex-wrap">
+</div>
+
+</div>
+
+<!-- TOP 2 -->
+
+<div class="mb-6">
+
+<h2 class="font-bold mb-3 text-slate-300">
+2 ตัวท้าย
+</h2>
+
+<div
+id="top2Container"
+class="flex justify-center gap-2 flex-wrap">
+</div>
+
+</div>
+
+<!-- SCORE -->
+
+<div class="glass rounded-2xl p-4 mb-6">
+
+<div class="flex justify-between mb-2">
+<span>AI Confidence</span>
+<span id="scoreText">0%</span>
+</div>
+
+<div class="w-full bg-slate-800 rounded-full overflow-hidden">
+<div id="scoreBar" class="bar w-0"></div>
+</div>
+
+</div>
+
+<!-- HEATMAP -->
+
+<div class="glass rounded-2xl p-4 mb-6">
+
+<h2 class="font-bold mb-4">
+🔥 Heatmap
+</h2>
+
+<div id="heatmap" class="space-y-3"></div>
+
+</div>
+
+<!-- HISTORY -->
+
+<div class="glass rounded-2xl p-4">
+
+<h2 class="font-bold mb-4">
+📊 History
+</h2>
+
+<div id="history" class="space-y-3"></div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const historyData = [
+  {
+    date:'16 พ.ค. 69',
+    main:'985452',
+    bottom:'95'
+  },
+  {
+    date:'2 พ.ค. 69',
+    main:'284729',
+    bottom:'38'
+  },
+  {
+    date:'16 เม.ย. 69',
+    main:'543118',
+    bottom:'21'
+  },
+  {
+    date:'1 เม.ย. 69',
+    main:'074205',
+    bottom:'64'
+  },
+  {
+    date:'16 มี.ค. 69',
+    main:'998887',
+    bottom:'09'
+  },
+  {
+    date:'1 มี.ค. 69',
+    main:'125272',
+    bottom:'09'
+  },
+  {
+    date:'16 ก.พ. 69',
+    main:'361807',
+    bottom:'92'
+  }
+];
+
+const mainContainer =
+document.getElementById('mainContainer');
+
+const top3Container =
+document.getElementById('top3Container');
+
+const top2Container =
+document.getElementById('top2Container');
+
+const historyContainer =
+document.getElementById('history');
+
+const heatmap =
+document.getElementById('heatmap');
+
+const generateBtn =
+document.getElementById('generateBtn');
+
+function renderHistory(){
+
+  historyContainer.innerHTML='';
+
+  historyData.forEach(item=>{
+
+    const div=document.createElement('div');
+
+    div.className=
+    'bg-slate-900 rounded-xl p-3';
+
+    div.innerHTML=`
+      <div class="flex justify-between">
+        <span class="text-emerald-400">
+          ${item.date}
+        </span>
+
+        <span class="text-yellow-400">
+          ${item.bottom}
+        </span>
+      </div>
+
+      <div class="text-2xl font-bold tracking-widest mt-2">
+        ${item.main}
+      </div>
+    `;
+
+    historyContainer.appendChild(div);
+
+  });
+
+}
+
+function getFrequency(position){
+
+  const freq={};
+
+  for(let i=0;i<=9;i++){
+    freq[i]=1;
+  }
+
+  historyData.forEach(item=>{
+
+    const digit=item.main[position];
+
+    freq[digit]+=3;
+
+  });
+
+  return freq;
+
+}
+
+function weightedPick(freq){
+
+  const pool=[];
+
+  Object.entries(freq).forEach(([digit,score])=>{
+
+    for(let i=0;i<score;i++){
+
+      pool.push(digit);
+
+    }
+
+  });
+
+  return pool[
+    Math.floor(Math.random()*pool.length)
+  ];
+
+}
+
+function generateNumber(){
+
+  let result='';
+
+  for(let pos=0;pos<6;pos++){
+
+    const freq=getFrequency(pos);
+
+    result+=weightedPick(freq);
+
+  }
+
+  return result;
+
+}
+
+function renderBalls(container,number,color){
+
+  container.innerHTML='';
+
+  number.split('').forEach(n=>{
+
+    const div=document.createElement('div');
+
+    div.className=
+    `ball ${color}`;
+
+    div.innerText=n;
+
+    container.appendChild(div);
+
+  });
+
+}
+
+function renderHeatmap(){
+
+  heatmap.innerHTML='';
+
+  for(let pos=0;pos<6;pos++){
+
+    const freq=getFrequency(pos);
+
+    const max=Math.max(...Object.values(freq));
+
+    const topDigit=
+    Object.entries(freq)
+      .sort((a,b)=>b[1]-a[1])[0];
+
+    const percent=
+    Math.floor((topDigit[1]/max)*100);
+
+    const row=document.createElement('div');
+
+    row.innerHTML=`
+
+      <div class="flex justify-between text-sm mb-1">
+        <span>หลัก ${pos+1}</span>
+        <span>${topDigit[0]}</span>
+      </div>
+
+      <div class="w-full bg-slate-800 rounded-full overflow-hidden">
+        <div
+          class="bar"
+          style="width:${percent}%">
+        </div>
+      </div>
+
+    `;
+
+    heatmap.appendChild(row);
+
+  }
+
+}
+
+function generateAI(){
+
+  generateBtn.innerText=
+  'กำลังวิเคราะห์...';
+
+  const loading=
+  `<div class="ball loading bg-slate-700">⚡</div>`;
+
+  mainContainer.innerHTML=loading;
+
+  setTimeout(()=>{
+
+    const number=
+    generateNumber();
+
+    const top3=
+    number.slice(-3);
+
+    const top2=
+    number.slice(-2);
+
+    renderBalls(
+      mainContainer,
+      number,
+      'bg-gradient-to-br from-emerald-500 to-teal-700'
+    );
+
+    renderBalls(
+      top3Container,
+      top3,
+      'bg-gradient-to-br from-violet-500 to-indigo-700'
+    );
+
+    renderBalls(
+      top2Container,
+      top2,
+      'bg-gradient-to-br from-yellow-500 to-orange-600'
+    );
+
+    const score=
+    Math.floor(Math.random()*25)+70;
+
+    document.getElementById('scoreText')
+      .innerText=score+'%';
+
+    document.getElementById('scoreBar')
+      .style.width=score+'%';
+
+    generateBtn.innerText=
+    '🚀 วิเคราะห์เลข';
+
+  },1200);
+
+}
+
+generateBtn.onclick=generateAI;
+
+renderHistory();
+
+renderHeatmap();
+
+</script>
+
+</body>
+</html>
