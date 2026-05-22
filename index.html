@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Turbo Lotto AI</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
+
 body{
   background:#020617;
   color:white;
@@ -16,9 +17,9 @@ body{
 }
 
 .glass{
-  background:rgba(255,255,255,0.05);
+  background:rgba(255,255,255,.05);
   backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,.08);
 }
 
 .ball{
@@ -39,10 +40,15 @@ body{
     transform:scale(.5);
     opacity:0;
   }
+
   100%{
     transform:scale(1);
     opacity:1;
   }
+}
+
+.loading{
+  animation:pulse 1s infinite;
 }
 
 .bar{
@@ -51,10 +57,8 @@ body{
   background:linear-gradient(to right,#10b981,#14b8a6);
 }
 
-.loading{
-  animation:pulse 1s infinite;
-}
 </style>
+
 </head>
 
 <body class="min-h-screen p-4">
@@ -64,17 +68,37 @@ body{
 <div class="glass rounded-3xl p-5 shadow-2xl">
 
 <h1 class="text-3xl font-bold text-center mb-2">
-🎯 Turbo Lotto AI
+ Turbo Lotto AI
 </h1>
 
 <p class="text-center text-emerald-400 mb-6">
-AI วิเคราะห์เลขเด่น
+AI 
 </p>
+
+<!-- MODE -->
+
+<div class="flex gap-3 mb-6">
+
+<button
+id="thaiBtn"
+class="flex-1 bg-emerald-600 py-3 rounded-xl font-bold">
+ 
+</button>
+
+<button
+id="laoBtn"
+class="flex-1 bg-slate-800 py-3 rounded-xl font-bold">
+ 
+</button>
+
+</div>
+
+<!-- BUTTON -->
 
 <button
 id="generateBtn"
-class="w-full bg-gradient-to-r from-emerald-500 to-teal-700 py-4 rounded-2xl font-bold text-lg mb-6">
-🚀 วิเคราะห์เลข
+class="w-full bg-gradient-to-r from-violet-600 to-indigo-600 py-4 rounded-2xl font-bold text-lg mb-6">
+ 
 </button>
 
 <!-- MAIN -->
@@ -82,7 +106,7 @@ class="w-full bg-gradient-to-r from-emerald-500 to-teal-700 py-4 rounded-2xl fon
 <div class="mb-6">
 
 <h2 class="font-bold mb-3 text-slate-300">
-รางวัลหลัก
+
 </h2>
 
 <div
@@ -92,31 +116,46 @@ class="flex justify-center gap-2 flex-wrap">
 
 </div>
 
-<!-- TOP 3 -->
+<!-- 3 DIGIT -->
 
 <div class="mb-6">
 
 <h2 class="font-bold mb-3 text-slate-300">
-3 ตัวท้าย
+3 
 </h2>
 
 <div
-id="top3Container"
+id="threeContainer"
 class="flex justify-center gap-2 flex-wrap">
 </div>
 
 </div>
 
-<!-- TOP 2 -->
+<!-- 2 DIGIT -->
 
 <div class="mb-6">
 
 <h2 class="font-bold mb-3 text-slate-300">
-2 ตัวท้าย
+2 
 </h2>
 
 <div
-id="top2Container"
+id="twoContainer"
+class="flex justify-center gap-2 flex-wrap">
+</div>
+
+</div>
+
+<!-- BOTTOM -->
+
+<div class="mb-6">
+
+<h2 class="font-bold mb-3 text-yellow-400">
+2 
+</h2>
+
+<div
+id="bottomContainer"
 class="flex justify-center gap-2 flex-wrap">
 </div>
 
@@ -132,7 +171,12 @@ class="flex justify-center gap-2 flex-wrap">
 </div>
 
 <div class="w-full bg-slate-800 rounded-full overflow-hidden">
-<div id="scoreBar" class="bar w-0"></div>
+
+<div
+id="scoreBar"
+class="bar w-0">
+</div>
+
 </div>
 
 </div>
@@ -142,7 +186,7 @@ class="flex justify-center gap-2 flex-wrap">
 <div class="glass rounded-2xl p-4 mb-6">
 
 <h2 class="font-bold mb-4">
-🔥 Heatmap
+ Heatmap
 </h2>
 
 <div id="heatmap" class="space-y-3"></div>
@@ -154,7 +198,7 @@ class="flex justify-center gap-2 flex-wrap">
 <div class="glass rounded-2xl p-4">
 
 <h2 class="font-bold mb-4">
-📊 History
+ History
 </h2>
 
 <div id="history" class="space-y-3"></div>
@@ -167,75 +211,107 @@ class="flex justify-center gap-2 flex-wrap">
 
 <script>
 
-const historyData = [
+let currentMode='thai';
+
+const historyData={
+
+thai:[
   {
-    date:'16 พ.ค. 69',
+    date:'16 .. 69',
     main:'985452',
     bottom:'95'
   },
   {
-    date:'2 พ.ค. 69',
+    date:'2 .. 69',
     main:'284729',
     bottom:'38'
   },
   {
-    date:'16 เม.ย. 69',
+    date:'16 .. 69',
     main:'543118',
     bottom:'21'
   },
   {
-    date:'1 เม.ย. 69',
+    date:'1 .. 69',
     main:'074205',
     bottom:'64'
   },
   {
-    date:'16 มี.ค. 69',
+    date:'16 .. 69',
     main:'998887',
     bottom:'09'
-  },
-  {
-    date:'1 มี.ค. 69',
-    main:'125272',
-    bottom:'09'
-  },
-  {
-    date:'16 ก.พ. 69',
-    main:'361807',
-    bottom:'92'
   }
-];
+],
 
-const mainContainer =
+lao:[
+  {
+    date:'20 .. 69',
+    main:'8769'
+  },
+  {
+    date:'18 .. 69',
+    main:'9572'
+  },
+  {
+    date:'15 .. 69',
+    main:'3417'
+  },
+  {
+    date:'13 .. 69',
+    main:'7804'
+  },
+  {
+    date:'11 .. 69',
+    main:'1932'
+  }
+]
+
+};
+
+const thaiBtn=
+document.getElementById('thaiBtn');
+
+const laoBtn=
+document.getElementById('laoBtn');
+
+const generateBtn=
+document.getElementById('generateBtn');
+
+const mainContainer=
 document.getElementById('mainContainer');
 
-const top3Container =
-document.getElementById('top3Container');
+const threeContainer=
+document.getElementById('threeContainer');
 
-const top2Container =
-document.getElementById('top2Container');
+const twoContainer=
+document.getElementById('twoContainer');
 
-const historyContainer =
+const bottomContainer=
+document.getElementById('bottomContainer');
+
+const historyContainer=
 document.getElementById('history');
 
-const heatmap =
+const heatmap=
 document.getElementById('heatmap');
-
-const generateBtn =
-document.getElementById('generateBtn');
 
 function renderHistory(){
 
   historyContainer.innerHTML='';
 
-  historyData.forEach(item=>{
+  historyData[currentMode].forEach(item=>{
 
     const div=document.createElement('div');
 
     div.className=
     'bg-slate-900 rounded-xl p-3';
 
-    div.innerHTML=`
+    if(currentMode==='thai'){
+
+      div.innerHTML=`
+
       <div class="flex justify-between">
+
         <span class="text-emerald-400">
           ${item.date}
         </span>
@@ -243,12 +319,45 @@ function renderHistory(){
         <span class="text-yellow-400">
           ${item.bottom}
         </span>
+
       </div>
 
       <div class="text-2xl font-bold tracking-widest mt-2">
         ${item.main}
       </div>
-    `;
+
+      `;
+
+    }else{
+
+      const top2=item.main.slice(-2);
+
+      const bottom2=item.main.slice(0,2);
+
+      div.innerHTML=`
+
+      <div class="flex justify-between">
+
+        <span class="text-red-400">
+          ${item.date}
+        </span>
+
+        <span class="text-yellow-400">
+          ${bottom2}
+        </span>
+
+      </div>
+
+      <div class="text-2xl font-bold tracking-widest mt-2">
+        ${item.main}
+      </div>
+
+      <div class="text-sm text-slate-400 mt-1">
+         ${top2} |  ${bottom2}
+      </div>
+
+      `;
+    }
 
     historyContainer.appendChild(div);
 
@@ -264,11 +373,15 @@ function getFrequency(position){
     freq[i]=1;
   }
 
-  historyData.forEach(item=>{
+  historyData[currentMode].forEach(item=>{
 
     const digit=item.main[position];
 
-    freq[digit]+=3;
+    if(digit!==undefined){
+
+      freq[digit]+=3;
+
+    }
 
   });
 
@@ -300,7 +413,10 @@ function generateNumber(){
 
   let result='';
 
-  for(let pos=0;pos<6;pos++){
+  const length=
+  currentMode==='thai' ? 6 : 4;
+
+  for(let pos=0;pos<length;pos++){
 
     const freq=getFrequency(pos);
 
@@ -335,15 +451,19 @@ function renderHeatmap(){
 
   heatmap.innerHTML='';
 
-  for(let pos=0;pos<6;pos++){
+  const length=
+  currentMode==='thai' ? 6 : 4;
+
+  for(let pos=0;pos<length;pos++){
 
     const freq=getFrequency(pos);
 
-    const max=Math.max(...Object.values(freq));
+    const max=
+    Math.max(...Object.values(freq));
 
     const topDigit=
     Object.entries(freq)
-      .sort((a,b)=>b[1]-a[1])[0];
+    .sort((a,b)=>b[1]-a[1])[0];
 
     const percent=
     Math.floor((topDigit[1]/max)*100);
@@ -352,17 +472,22 @@ function renderHeatmap(){
 
     row.innerHTML=`
 
-      <div class="flex justify-between text-sm mb-1">
-        <span>หลัก ${pos+1}</span>
-        <span>${topDigit[0]}</span>
+    <div class="flex justify-between text-sm mb-1">
+
+      <span> ${pos+1}</span>
+
+      <span>${topDigit[0]}</span>
+
+    </div>
+
+    <div class="w-full bg-slate-800 rounded-full overflow-hidden">
+
+      <div
+      class="bar"
+      style="width:${percent}%">
       </div>
 
-      <div class="w-full bg-slate-800 rounded-full overflow-hidden">
-        <div
-          class="bar"
-          style="width:${percent}%">
-        </div>
-      </div>
+    </div>
 
     `;
 
@@ -375,63 +500,119 @@ function renderHeatmap(){
 function generateAI(){
 
   generateBtn.innerText=
-  'กำลังวิเคราะห์...';
+  '...';
 
   const loading=
-  `<div class="ball loading bg-slate-700">⚡</div>`;
+  `<div class="ball loading bg-slate-700"></div>`;
 
   mainContainer.innerHTML=loading;
+  threeContainer.innerHTML=loading;
+  twoContainer.innerHTML=loading;
+  bottomContainer.innerHTML=loading;
 
   setTimeout(()=>{
 
     const number=
     generateNumber();
 
-    const top3=
+    const three=
     number.slice(-3);
 
-    const top2=
+    const two=
     number.slice(-2);
+
+    let bottom='';
+
+    if(currentMode==='thai'){
+
+      bottom=
+      generateNumber().slice(-2);
+
+    }else{
+
+      bottom=
+      number.slice(0,2);
+
+    }
 
     renderBalls(
       mainContainer,
       number,
+      currentMode==='thai'
+      ?
       'bg-gradient-to-br from-emerald-500 to-teal-700'
+      :
+      'bg-gradient-to-br from-red-500 to-rose-700'
     );
 
     renderBalls(
-      top3Container,
-      top3,
+      threeContainer,
+      three,
       'bg-gradient-to-br from-violet-500 to-indigo-700'
     );
 
     renderBalls(
-      top2Container,
-      top2,
+      twoContainer,
+      two,
+      'bg-gradient-to-br from-blue-500 to-cyan-700'
+    );
+
+    renderBalls(
+      bottomContainer,
+      bottom,
       'bg-gradient-to-br from-yellow-500 to-orange-600'
     );
 
     const score=
-    Math.floor(Math.random()*25)+70;
+    Math.floor(Math.random()*20)+80;
 
     document.getElementById('scoreText')
-      .innerText=score+'%';
+    .innerText=score+'%';
 
     document.getElementById('scoreBar')
-      .style.width=score+'%';
+    .style.width=score+'%';
 
     generateBtn.innerText=
-    '🚀 วิเคราะห์เลข';
+    ' ';
 
   },1200);
 
 }
 
-generateBtn.onclick=generateAI;
+thaiBtn.onclick=()=>{
+
+  currentMode='thai';
+
+  thaiBtn.className=
+  'flex-1 bg-emerald-600 py-3 rounded-xl font-bold';
+
+  laoBtn.className=
+  'flex-1 bg-slate-800 py-3 rounded-xl font-bold';
+
+  renderHistory();
+  renderHeatmap();
+
+};
+
+laoBtn.onclick=()=>{
+
+  currentMode='lao';
+
+  laoBtn.className=
+  'flex-1 bg-red-600 py-3 rounded-xl font-bold';
+
+  thaiBtn.className=
+  'flex-1 bg-slate-800 py-3 rounded-xl font-bold';
+
+  renderHistory();
+  renderHeatmap();
+
+};
 
 renderHistory();
-
 renderHeatmap();
+
+generateBtn.onclick=generateAI;
 
 </script>
 
