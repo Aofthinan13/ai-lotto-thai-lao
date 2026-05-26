@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>Turbo Lotto AI Neural</title>
+<title>🇱🇦 Lao Lotto Neural AI</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap" rel="stylesheet">
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap"
+rel="stylesheet">
 
 <script src="https://cdn.tailwindcss.com"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 
 <style>
@@ -21,22 +26,27 @@ color:white;
 }
 
 .glass{
+
 background:rgba(255,255,255,.05);
-backdrop-filter:blur(6px);
+
+backdrop-filter:blur(10px);
+
 border:1px solid rgba(255,255,255,.1);
+
 }
 
 .ball{
 
 width:70px;
 height:70px;
+
 border-radius:50%;
 
 display:flex;
-align-items:center;
 justify-content:center;
+align-items:center;
 
-font-size:28px;
+font-size:30px;
 font-weight:bold;
 
 color:white;
@@ -48,65 +58,661 @@ animation:pop .4s ease;
 @keyframes pop{
 
 0%{
-transform:scale(.4);
+
 opacity:0;
+transform:scale(.5);
+
 }
 
 100%{
-transform:scale(1);
+
 opacity:1;
+transform:scale(1);
+
 }
 
+}
+
+button{
+transition:.3s;
+}
+
+button:active{
+transform:scale(.95);
 }
 
 </style>
 
 </head>
 
-<body class="p-5">
+<body class="min-h-screen p-5">
 
-<div class="max-w-md mx-auto glass p-5 rounded-3xl">
+<div class="max-w-md mx-auto">
+
+<div class="glass rounded-3xl p-5">
 
 <h1 class="text-3xl font-bold text-center">
-🧠 Turbo Lotto Neural AI
+
+🇱🇦 หวยลาว Neural AI
+
 </h1>
 
-<p class="text-center text-cyan-400 mb-5">
-TensorFlow.js Dense Neural Network
+<p class="text-center text-cyan-400">
+
+4 Digit Neural Network
+
 </p>
+
+<div
+id="dateBox"
+class="text-center text-yellow-400 mt-3 mb-5">
+</div>
+
 
 <button
 id="generateBtn"
-class="w-full bg-violet-600 p-4 rounded-xl font-bold mb-6">
+class="w-full bg-gradient-to-r from-violet-600 to-indigo-700 py-4 rounded-xl font-bold mb-6">
 
 🚀 วิเคราะห์เลข AI
 
 </button>
 
-<div class="mb-5">
 
-<h2 class="font-bold mb-2">
-รางวัลหลัก
+
+<div class="mb-6">
+
+<h2 class="font-bold mb-3">
+
+เลข 4 ตัว
+
 </h2>
 
 <div
 id="mainContainer"
-class="flex gap-2 flex-wrap justify-center">
-</div>
+class="flex justify-center gap-2">
 
 </div>
 
-<div class="mb-5">
+</div>
 
-<h2 class="font-bold mb-2">
-3 ตัวท้าย
+
+
+<div class="mb-6">
+
+<h2 class="font-bold mb-3">
+
+3 ตัวบน
+
 </h2>
 
 <div
 id="threeContainer"
-class="flex gap-2 flex-wrap justify-center">
+class="flex justify-center gap-2">
+
 </div>
 
+</div>
+
+
+
+<div class="mb-6">
+
+<h2 class="font-bold mb-3 text-yellow-400">
+
+2 ตัวล่าง
+
+</h2>
+
+<div
+id="twoContainer"
+class="flex justify-center gap-2">
+
+</div>
+
+</div>
+
+
+
+<div
+id="confidenceBox"
+class="glass rounded-xl p-5 text-center">
+
+--
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+<script>
+
+/* ====================
+DATA
+==================== */
+
+const laoNumbers=[
+
+"8769",
+"0470",
+"3369",
+"7095",
+"9996",
+"6217",
+"8042",
+"5130",
+"7614",
+"2089",
+"4372",
+"5926",
+"7108",
+"2846",
+"5179"
+
+];
+
+
+/* ====================
+ELEMENTS
+==================== */
+
+const generateBtn=
+document.getElementById(
+"generateBtn"
+);
+
+const mainContainer=
+document.getElementById(
+"mainContainer"
+);
+
+const threeContainer=
+document.getElementById(
+"threeContainer"
+);
+
+const twoContainer=
+document.getElementById(
+"twoContainer"
+);
+
+const confidenceBox=
+document.getElementById(
+"confidenceBox"
+);
+
+const dateBox=
+document.getElementById(
+"dateBox"
+);
+
+
+
+/* ====================
+DATE
+==================== */
+
+function getToday(){
+
+const now=
+new Date();
+
+const day=
+String(
+now.getDate()
+).padStart(
+2,
+'0'
+);
+
+const month=
+String(
+now.getMonth()+1
+).padStart(
+2,
+'0'
+);
+
+const year=
+now.getFullYear()+543;
+
+return `${day}/${month}/${year}`;
+
+}
+
+
+function checkDailyLimit(){
+
+const today=
+getToday();
+
+dateBox.innerHTML=
+`📅 ${today}`;
+
+const lastDate=
+
+localStorage.getItem(
+"lastPredictionDate"
+);
+
+if(
+lastDate===today
+){
+
+generateBtn.disabled=true;
+
+generateBtn.innerHTML=
+"🔒 ใช้สิทธิ์วันนี้แล้ว";
+
+generateBtn.className=
+"w-full bg-slate-700 py-4 rounded-xl font-bold mb-6";
+
+return false;
+
+}
+
+return true;
+
+}
+
+
+
+/* ====================
+BALLS
+==================== */
+
+function renderBalls(
+container,
+number,
+color
+){
+
+container.innerHTML='';
+
+number
+.split('')
+
+.forEach(n=>{
+
+const div=
+document.createElement(
+'div'
+);
+
+div.className=
+`ball ${color}`;
+
+div.innerText=n;
+
+container.appendChild(
+div
+);
+
+});
+
+}
+
+
+
+/* ====================
+DATASET
+==================== */
+
+function createDataset(){
+
+const xs=[];
+const ys=[];
+
+const windowSize=3;
+
+for(
+let i=0;
+i<laoNumbers.length-windowSize;
+i++
+){
+
+let input=[];
+
+for(
+let j=0;
+j<windowSize;
+j++
+){
+
+input.push(
+
+...laoNumbers[
+i+j
+]
+
+.split('')
+.map(
+x=>Number(x)/9
+)
+
+);
+
+}
+
+const output=
+
+laoNumbers[
+i+windowSize
+]
+
+.split('')
+.map(
+x=>Number(x)/9
+);
+
+xs.push(
+input
+);
+
+ys.push(
+output
+);
+
+}
+
+return{
+
+xs:
+tf.tensor2d(xs),
+
+ys:
+tf.tensor2d(ys)
+
+};
+
+}
+
+
+
+/* ====================
+MODEL
+==================== */
+
+function createModel(){
+
+const model=
+tf.sequential();
+
+model.add(
+
+tf.layers.dense({
+
+inputShape:[12],
+
+units:64,
+
+activation:'relu'
+
+})
+
+);
+
+model.add(
+
+tf.layers.dense({
+
+units:32,
+
+activation:'relu'
+
+})
+
+);
+
+model.add(
+
+tf.layers.dense({
+
+units:4,
+
+activation:'sigmoid'
+
+})
+
+);
+
+model.compile({
+
+optimizer:'adam',
+
+loss:'meanSquaredError'
+
+});
+
+return model;
+
+}
+
+
+
+/* ====================
+AI
+==================== */
+
+async function predictAI(){
+
+const data=
+createDataset();
+
+const model=
+createModel();
+
+const history=
+
+await model.fit(
+
+data.xs,
+data.ys,
+
+{
+
+epochs:200,
+
+shuffle:true,
+
+verbose:0
+
+}
+
+);
+
+const loss=
+history.history.loss.pop();
+
+const latest=
+laoNumbers.slice(-3);
+
+let input=[];
+
+latest.forEach(n=>{
+
+input.push(
+
+...n
+.split('')
+.map(
+x=>Number(x)/9
+)
+
+);
+
+});
+
+
+const prediction=
+
+model.predict(
+
+tf.tensor2d([
+input
+])
+
+);
+
+const values=
+await prediction.data();
+
+let number='';
+
+values.forEach(v=>{
+
+let digit=
+
+Math.round(
+v*9
+);
+
+digit=
+
+Math.max(
+0,
+Math.min(
+9,
+digit
+)
+);
+
+number+=digit;
+
+});
+
+return{
+
+number,
+
+confidence:
+
+Math.max(
+
+50,
+
+Math.round(
+100-(loss*1000)
+)
+
+)
+
+};
+
+}
+
+
+
+/* ====================
+GENERATE
+==================== */
+
+async function generateAI(){
+
+if(
+!checkDailyLimit()
+){
+
+return;
+}
+
+generateBtn.disabled=true;
+
+generateBtn.innerHTML=
+"⏳ กำลังวิเคราะห์...";
+
+const result=
+await predictAI();
+
+const number=
+result.number;
+
+const three=
+number.slice(
+1
+);
+
+const two=
+number.slice(
+0,
+2
+);
+
+renderBalls(
+
+mainContainer,
+number,
+'bg-gradient-to-br from-green-500 to-emerald-700'
+
+);
+
+renderBalls(
+
+threeContainer,
+three,
+'bg-gradient-to-br from-violet-500 to-indigo-700'
+
+);
+
+renderBalls(
+
+twoContainer,
+two,
+'bg-gradient-to-br from-yellow-500 to-orange-600'
+
+);
+
+
+confidenceBox.innerHTML=`
+
+<div class="text-5xl font-bold text-green-400">
+
+${result.confidence}%
+
+</div>
+
+<div class="text-slate-400 mt-2">
+
+Neural Confidence
+
+</div>
+
+`;
+
+
+localStorage.setItem(
+
+"lastPredictionDate",
+getToday()
+
+);
+
+generateBtn.innerHTML=
+"🔒 ใช้สิทธิ์วันนี้แล้ว";
+
+generateBtn.className=
+"w-full bg-slate-700 py-4 rounded-xl font-bold mb-6";
+
+}
+
+
+
+/* ====================
+START
+==================== */
+
+generateBtn.onclick=
+generateAI;
+
+checkDailyLimit();
+
+</script>
+
+</body>
+</html>
 </div>
 
 <div class="mb-5">
