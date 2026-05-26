@@ -1,749 +1,197 @@
-<!-- =========================
- TURBO LOTTO AI REALTIME
- VERSION: FIREBASE REALTIME
-========================= -->
-
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0">
+<title>Turbo Lotto AI Neural</title>
 
-<title>
-Turbo Lotto AI Realtime
-</title>
-
-<!-- FONT -->
-
-<link rel="preconnect"
-href="https://fonts.googleapis.com">
-
-<link rel="preconnect"
-href="https://fonts.gstatic.com"
-crossorigin>
-
-<link
-href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700&display=swap"
-rel="stylesheet">
-
-<!-- TAILWIND -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap" rel="stylesheet">
 
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 
-<!-- TFJS -->
+<style>
 
-<script defer
-src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs">
-</script>
-
-<!-- FIREBASE -->
-
-<script type="module">
-
-import {
-initializeApp
+body{
+font-family:'Kanit',sans-serif;
+background:#020617;
+color:white;
 }
-from
-'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 
-import {
+.glass{
+background:rgba(255,255,255,.05);
+backdrop-filter:blur(6px);
+border:1px solid rgba(255,255,255,.1);
+}
 
-getDatabase,
-ref,
-set,
-get,
-child,
-onValue
+.ball{
+
+width:70px;
+height:70px;
+border-radius:50%;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:28px;
+font-weight:bold;
+
+color:white;
+
+animation:pop .4s ease;
 
 }
-from
-'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
+
+@keyframes pop{
+
+0%{
+transform:scale(.4);
+opacity:0;
+}
+
+100%{
+transform:scale(1);
+opacity:1;
+}
+
+}
+
+</style>
+
+</head>
+
+<body class="p-5">
+
+<div class="max-w-md mx-auto glass p-5 rounded-3xl">
+
+<h1 class="text-3xl font-bold text-center">
+🧠 Turbo Lotto Neural AI
+</h1>
+
+<p class="text-center text-cyan-400 mb-5">
+TensorFlow.js Dense Neural Network
+</p>
+
+<button
+id="generateBtn"
+class="w-full bg-violet-600 p-4 rounded-xl font-bold mb-6">
+
+🚀 วิเคราะห์เลข AI
+
+</button>
+
+<div class="mb-5">
+
+<h2 class="font-bold mb-2">
+รางวัลหลัก
+</h2>
+
+<div
+id="mainContainer"
+class="flex gap-2 flex-wrap justify-center">
+</div>
+
+</div>
+
+<div class="mb-5">
+
+<h2 class="font-bold mb-2">
+3 ตัวท้าย
+</h2>
+
+<div
+id="threeContainer"
+class="flex gap-2 flex-wrap justify-center">
+</div>
+
+</div>
+
+<div class="mb-5">
+
+<h2 class="font-bold mb-2">
+2 ตัวท้าย
+</h2>
+
+<div
+id="twoContainer"
+class="flex gap-2 flex-wrap justify-center">
+</div>
+
+</div>
+
+<div class="mb-5">
+
+<h2 class="font-bold mb-2">
+2 ตัวล่าง
+</h2>
+
+<div
+id="bottomContainer"
+class="flex gap-2 flex-wrap justify-center">
+</div>
+
+</div>
+
+<div
+id="confidenceBox"
+class="glass p-5 rounded-xl text-center">
+
+--
+
+</div>
+
+</div>
+
+<script>
 
 /* =========================
- FIREBASE CONFIG
+DATA
 ========================= */
 
-const firebaseConfig = {
+const thaiNumbers=[
 
-apiKey:
-"YOUR_API_KEY",
+"985452",
+"284729",
+"543118",
+"074205",
+"998887",
+"125272",
+"361807",
+"762514",
+"904225",
+"813690",
+"592318"
 
-authDomain:
-"YOUR_PROJECT.firebaseapp.com",
-
-databaseURL:
-"https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-
-projectId:
-"YOUR_PROJECT",
-
-storageBucket:
-"YOUR_PROJECT.appspot.com",
-
-messagingSenderId:
-"123456",
-
-appId:
-"APP_ID"
-
-};
+];
 
 /* =========================
- INIT FIREBASE
+ELEMENTS
 ========================= */
-
-const app=
-initializeApp(firebaseConfig);
-
-const db=
-getDatabase(app);
-
-/* =========================
- GLOBAL
-========================= */
-
-window.historyData={
-
-thai:[],
-
-lao:[]
-
-};
-
-window.currentMode='thai';
-
-window.aiModel=null;
-
-window.isTraining=false;
-
-/* =========================
- ELEMENTS
-========================= */
-
-const thaiBtn=
-document.getElementById('thaiBtn');
-
-const laoBtn=
-document.getElementById('laoBtn');
 
 const generateBtn=
-document.getElementById('generateBtn');
-
-const historyContainer=
-document.getElementById('historyContainer');
+document.getElementById("generateBtn");
 
 const mainContainer=
-document.getElementById('mainContainer');
+document.getElementById("mainContainer");
 
 const threeContainer=
-document.getElementById('threeContainer');
+document.getElementById("threeContainer");
 
 const twoContainer=
-document.getElementById('twoContainer');
+document.getElementById("twoContainer");
 
 const bottomContainer=
-document.getElementById('bottomContainer');
+document.getElementById("bottomContainer");
 
-const hotDigits=
-document.getElementById('hotDigits');
+const confidenceBox=
+document.getElementById("confidenceBox");
 
-const aiStatus=
-document.getElementById('aiStatus');
 
 /* =========================
- FIREBASE LOAD
-========================= */
-
-async function loadRealtimeData(){
-
-onValue(
-
-ref(db,'lotto'),
-
-(snapshot)=>{
-
-const data=
-snapshot.val();
-
-if(data){
-
-historyData.thai=
-data.thai || [];
-
-historyData.lao=
-data.lao || [];
-
-renderHistory();
-
-renderHotDigits();
-
-}
-
-}
-
-);
-
-}
-
-/* =========================
- AUTO FETCH THAI
-========================= */
-
-async function fetchThai(){
-
-try{
-
-const response=
-await fetch(
-'https://lotto.api.rayriffy.com/latest'
-);
-
-const data=
-await response.json();
-
-const firstPrize=
-data.response.prizes.find(
-p=>p.id==='first'
-);
-
-const lastTwo=
-data.response.runningNumbers.find(
-n=>n.id==='lastTwo'
-);
-
-const result={
-
-date:data.response.date,
-
-main:firstPrize.number,
-
-bottom:lastTwo.number
-
-};
-
-const exists=
-historyData.thai.some(
-x=>x.date===result.date
-);
-
-if(!exists){
-
-historyData.thai.unshift(result);
-
-historyData.thai=
-historyData.thai.slice(0,500);
-
-saveRealtime();
-
-await retrainAI();
-
-}
-
-}catch(error){
-
-console.log(error);
-
-}
-
-}
-
-/* =========================
- AUTO FETCH LAO
-========================= */
-
-async function fetchLao(){
-
-try{
-
-const response=
-await fetch(
-'https://YOUR-LAO-API.com/latest'
-);
-
-const data=
-await response.json();
-
-const result={
-
-date:data.date,
-
-main:data.number
-
-};
-
-const exists=
-historyData.lao.some(
-x=>x.date===result.date
-);
-
-if(!exists){
-
-historyData.lao.unshift(result);
-
-historyData.lao=
-historyData.lao.slice(0,500);
-
-saveRealtime();
-
-await retrainAI();
-
-}
-
-}catch(error){
-
-console.log(error);
-
-}
-
-}
-
-/* =========================
- SAVE FIREBASE
-========================= */
-
-async function saveRealtime(){
-
-await set(
-
-ref(db,'lotto'),
-
-{
-
-thai:historyData.thai,
-
-lao:historyData.lao
-
-}
-
-);
-
-}
-
-/* =========================
- HOT DIGITS
-========================= */
-
-function getHotDigits(){
-
-const freq={};
-
-for(let i=0;i<=9;i++){
-
-freq[i]=0;
-
-}
-
-historyData[currentMode]
-.forEach((item,index)=>{
-
-const weight=
-historyData[currentMode].length-index;
-
-item.main
-.split('')
-.forEach(n=>{
-
-freq[n]+=weight;
-
-});
-
-});
-
-return Object.entries(freq)
-.sort((a,b)=>b[1]-a[1])
-.slice(0,5);
-
-}
-
-/* =========================
- RENDER HOT
-========================= */
-
-function renderHotDigits(){
-
-hotDigits.innerHTML='';
-
-const hot=
-getHotDigits();
-
-hot.forEach(item=>{
-
-const div=
-document.createElement('div');
-
-div.className=
-'bg-slate-900 rounded-xl p-3 text-center';
-
-div.innerHTML=`
-
-<div class="text-2xl font-bold text-orange-400">
-
-${item[0]}
-
-</div>
-
-<div class="text-xs text-slate-400">
-
-score ${item[1]}
-
-</div>
-
-`;
-
-hotDigits.appendChild(div);
-
-});
-
-}
-
-/* =========================
- HISTORY
-========================= */
-
-function renderHistory(){
-
-historyContainer.innerHTML='';
-
-historyData[currentMode]
-.forEach(item=>{
-
-const div=
-document.createElement('div');
-
-div.className=
-'bg-slate-900 rounded-2xl p-4';
-
-if(currentMode==='thai'){
-
-div.innerHTML=`
-
-<div class="flex justify-between">
-
-<span class="text-emerald-400 text-xs">
-
-${item.date}
-
-</span>
-
-<span class="text-yellow-400 text-xs">
-
- ${item.bottom}
-
-</span>
-
-</div>
-
-<div class="text-2xl font-bold mt-2">
-
-${item.main}
-
-</div>
-
-`;
-
-}else{
-
-const top=
-item.main.slice(-2);
-
-const bottom=
-item.main.slice(0,2);
-
-div.innerHTML=`
-
-<div class="flex justify-between">
-
-<span class="text-red-400 text-xs">
-
-${item.date}
-
-</span>
-
-</div>
-
-<div class="text-2xl font-bold mt-2">
-
-${item.main}
-
-</div>
-
-<div class="text-xs text-slate-400 mt-2">
-
- ${top} |  ${bottom}
-
-</div>
-
-`;
-
-}
-
-historyContainer.appendChild(div);
-
-});
-
-}
-
-/* =========================
- NORMALIZE
-========================= */
-
-function normalize(num){
-
-return num/9;
-
-}
-
-function denormalize(num){
-
-return Math.round(num*9);
-
-}
-
-/* =========================
- DATASET
-========================= */
-
-function createDataset(){
-
-const dataset=[];
-
-historyData[currentMode]
-.forEach(item=>{
-
-const nums=
-item.main
-.split('')
-.map(Number)
-.map(normalize);
-
-dataset.push(nums);
-
-});
-
-return dataset;
-
-}
-
-/* =========================
- TRAIN DATA
-========================= */
-
-function prepareTrainingData(){
-
-const dataset=
-createDataset();
-
-const xs=[];
-const ys=[];
-
-for(
-let i=0;
-i<dataset.length-1;
-i++
-){
-
-xs.push(dataset[i]);
-
-ys.push(dataset[i+1]);
-
-}
-
-return{
-
-xs:tf.tensor2d(xs),
-
-ys:tf.tensor2d(ys)
-
-};
-
-}
-
-/* =========================
- CREATE MODEL
-========================= */
-
-async function createModel(){
-
-const inputSize=
-currentMode==='thai'
-?6
-:4;
-
-aiModel=tf.sequential();
-
-aiModel.add(
-
-tf.layers.dense({
-
-units:128,
-
-activation:'relu',
-
-inputShape:[inputSize]
-
-})
-
-);
-
-aiModel.add(
-
-tf.layers.dropout({
-rate:.2
-})
-
-);
-
-aiModel.add(
-
-tf.layers.dense({
-
-units:64,
-
-activation:'relu'
-
-})
-
-);
-
-aiModel.add(
-
-tf.layers.dense({
-
-units:32,
-
-activation:'relu'
-
-})
-
-);
-
-aiModel.add(
-
-tf.layers.dense({
-
-units:inputSize,
-
-activation:'sigmoid'
-
-})
-
-);
-
-aiModel.compile({
-
-optimizer:'adam',
-
-loss:'meanSquaredError'
-
-});
-
-}
-
-/* =========================
- TRAIN AI
-========================= */
-
-async function retrainAI(){
-
-if(isTraining){
-
-return;
-
-}
-
-if(historyData[currentMode]
-.length<5){
-
-return;
-
-}
-
-isTraining=true;
-
-aiStatus.innerText=
-'Training AI...';
-
-const data=
-prepareTrainingData();
-
-await createModel();
-
-await aiModel.fit(
-
-data.xs,
-
-data.ys,
-
-{
-
-epochs:40,
-
-shuffle:true,
-
-validationSplit:.2
-
-}
-
-);
-
-data.xs.dispose();
-data.ys.dispose();
-
-aiStatus.innerText=
-'AI Ready';
-
-isTraining=false;
-
-}
-
-/* =========================
- PREDICT
-========================= */
-
-async function predictAI(){
-
-const latest=
-historyData[currentMode][0]
-.main
-.split('')
-.map(Number)
-.map(normalize);
-
-const input=
-tf.tensor2d([latest]);
-
-const prediction=
-aiModel.predict(input);
-
-const values=
-await prediction.data();
-
-input.dispose();
-prediction.dispose();
-
-let result='';
-
-values.forEach(v=>{
-
-const num=
-denormalize(v);
-
-result+=
-Math.abs(num)%10;
-
-});
-
-return result;
-
-}
-
-/* =========================
- BALLS
+RENDER
 ========================= */
 
 function renderBalls(
@@ -754,8 +202,7 @@ color
 
 container.innerHTML='';
 
-number.split('')
-.forEach(n=>{
+number.split('').forEach(n=>{
 
 const div=
 document.createElement('div');
@@ -772,327 +219,311 @@ container.appendChild(div);
 }
 
 /* =========================
- GENERATE
+DATASET
+========================= */
+
+function createDataset(){
+
+const xs=[];
+const ys=[];
+
+const windowSize=3;
+
+for(
+let i=0;
+i<thaiNumbers.length-windowSize;
+i++
+){
+
+let input=[];
+
+for(
+let j=0;
+j<windowSize;
+j++
+){
+
+input.push(
+...thaiNumbers[
+i+j
+]
+.split('')
+.map(
+x=>Number(x)/9
+)
+);
+
+}
+
+const output=
+thaiNumbers[
+i+windowSize
+]
+.split('')
+.map(
+x=>Number(x)/9
+);
+
+xs.push(input);
+
+ys.push(output);
+
+}
+
+return{
+
+xs:tf.tensor2d(xs),
+ys:tf.tensor2d(ys)
+
+};
+
+}
+
+/* =========================
+MODEL
+========================= */
+
+function createModel(){
+
+const model=
+tf.sequential();
+
+model.add(
+
+tf.layers.dense({
+
+inputShape:[18],
+units:128,
+activation:'relu'
+
+})
+
+);
+
+model.add(
+
+tf.layers.dense({
+
+units:64,
+activation:'relu'
+
+})
+
+);
+
+model.add(
+
+tf.layers.dense({
+
+units:32,
+activation:'relu'
+
+})
+
+);
+
+model.add(
+
+tf.layers.dense({
+
+units:6,
+activation:'sigmoid'
+
+})
+
+);
+
+model.compile({
+
+optimizer:'adam',
+loss:'meanSquaredError'
+
+});
+
+return model;
+
+}
+
+/* =========================
+TRAIN
+========================= */
+
+async function trainModel(){
+
+const data=
+createDataset();
+
+const model=
+createModel();
+
+const history=
+await model.fit(
+
+data.xs,
+data.ys,
+
+{
+
+epochs:300,
+shuffle:true,
+
+}
+
+);
+
+const loss=
+history.history.loss.pop();
+
+return{
+
+model,
+loss
+
+};
+
+}
+
+/* =========================
+PREDICT
+========================= */
+
+async function predict(){
+
+const result=
+await trainModel();
+
+const model=
+result.model;
+
+const loss=
+result.loss;
+
+const last3=
+thaiNumbers
+.slice(-3);
+
+let input=[];
+
+last3.forEach(n=>{
+
+input.push(
+...n
+.split('')
+.map(
+x=>Number(x)/9
+)
+);
+
+});
+
+const prediction=
+model.predict(
+tf.tensor2d([input])
+);
+
+const values=
+await prediction.data();
+
+let number='';
+
+values.forEach(v=>{
+
+let digit=
+Math.round(v*9);
+
+digit=
+Math.max(
+0,
+Math.min(9,digit)
+);
+
+number+=digit;
+
+});
+
+let confidence=
+Math.max(
+50,
+Math.round(
+100-(loss*1000)
+)
+);
+
+return{
+
+number,
+confidence
+
+};
+
+}
+
+/* =========================
+GENERATE
 ========================= */
 
 async function generateAI(){
 
-if(!aiModel){
-
-return;
-
-}
-
 generateBtn.disabled=true;
 
 generateBtn.innerText=
-'...';
+"⏳ AI กำลังเรียนรู้...";
+
+const result=
+await predict();
 
 const number=
-await predictAI();
-
-const three=
-number.slice(-3);
-
-const two=
-number.slice(-2);
-
-let bottom='';
-
-if(currentMode==='thai'){
-
-bottom=
-Math.floor(Math.random()*10)
-+
-''
-+
-Math.floor(Math.random()*10);
-
-}else{
-
-bottom=
-number.slice(0,2);
-
-}
+result.number;
 
 renderBalls(
 mainContainer,
 number,
-'bg-gradient-to-br from-emerald-500 to-teal-700'
+'bg-emerald-600'
 );
 
 renderBalls(
 threeContainer,
-three,
-'bg-gradient-to-br from-violet-500 to-indigo-700'
+number.slice(-3),
+'bg-violet-600'
 );
 
 renderBalls(
 twoContainer,
-two,
-'bg-gradient-to-br from-cyan-500 to-blue-700'
+number.slice(-2),
+'bg-blue-600'
 );
 
 renderBalls(
 bottomContainer,
-bottom,
-'bg-gradient-to-br from-yellow-500 to-orange-600'
+number.slice(2,4),
+'bg-yellow-500'
 );
 
-generateBtn.disabled=false;
+confidenceBox.innerHTML=`
 
-generateBtn.innerText=
-'  AI';
+<div class="text-5xl font-bold text-green-400">
 
-}
-
-/* =========================
- MODE
-========================= */
-
-thaiBtn.onclick=()=>{
-
-currentMode='thai';
-
-renderHistory();
-
-renderHotDigits();
-
-};
-
-laoBtn.onclick=()=>{
-
-currentMode='lao';
-
-renderHistory();
-
-renderHotDigits();
-
-};
-
-/* =========================
- AUTO UPDATE
-========================= */
-
-setInterval(()=>{
-
-fetchThai();
-
-fetchLao();
-
-},300000);
-
-/* =========================
- INIT
-========================= */
-
-window.onload=async()=>{
-
-await loadRealtimeData();
-
-await fetchThai();
-
-await fetchLao();
-
-await retrainAI();
-
-generateBtn.onclick=
-generateAI;
-
-};
-
-</script>
-
-<style>
-
-body{
-
-background:#020617;
-color:white;
-font-family:'Kanit',sans-serif;
-
-}
-
-.ball{
-
-width:68px;
-height:68px;
-
-border-radius:999px;
-
-display:flex;
-align-items:center;
-justify-content:center;
-
-font-size:28px;
-font-weight:bold;
-
-color:white;
-
-}
-
-</style>
-
-</head>
-
-<body class="min-h-screen p-4">
-
-<div class="max-w-md mx-auto">
-
-<div class="bg-slate-900 rounded-3xl p-5">
-
-<h1 class="text-3xl font-bold text-center mb-2">
-
- Turbo Lotto AI
-
-</h1>
-
-<p class="text-center text-cyan-400 mb-6">
-
-Realtime Firebase Edition
-
-</p>
-
-<div class="flex gap-3 mb-6">
-
-<button
-id="thaiBtn"
-class="flex-1 bg-emerald-600 py-3 rounded-xl font-bold">
-
- 
-
-</button>
-
-<button
-id="laoBtn"
-class="flex-1 bg-red-600 py-3 rounded-xl font-bold">
-
- 
-
-</button>
-
-</div>
-
-<button
-id="generateBtn"
-class="w-full bg-gradient-to-r from-violet-600 to-indigo-600 py-4 rounded-2xl font-bold mb-6">
-
-  AI
-
-</button>
-
-<div class="mb-6">
-
-<div class="flex justify-between">
-
-<span>
-AI STATUS
-</span>
-
-<span id="aiStatus">
-
-Loading...
-
-</span>
-
-</div>
-
-</div>
-
-<div class="mb-6">
-
-<h2 class="font-bold mb-3">
-
-
-
-</h2>
-
-<div
-id="mainContainer"
-class="flex justify-center gap-2 flex-wrap">
-</div>
-
-</div>
-
-<div class="mb-6">
-
-<h2 class="font-bold mb-3">
-
-3 
-
-</h2>
-
-<div
-id="threeContainer"
-class="flex justify-center gap-2 flex-wrap">
-</div>
-
-</div>
-
-<div class="mb-6">
-
-<h2 class="font-bold mb-3">
-
-2 
-
-</h2>
-
-<div
-id="twoContainer"
-class="flex justify-center gap-2 flex-wrap">
-</div>
-
-</div>
-
-<div class="mb-6">
-
-<h2 class="font-bold mb-3 text-yellow-400">
-
-2 
-
-</h2>
-
-<div
-id="bottomContainer"
-class="flex justify-center gap-2 flex-wrap">
-</div>
-
-</div>
-
-<div class="mb-6">
-
-<h2 class="font-bold mb-3">
-
- Hot Digits
-
-</h2>
-
-<div
-id="hotDigits"
-class="grid grid-cols-5 gap-2">
-</div>
+${result.confidence}%
 
 </div>
 
 <div>
-
-<h2 class="font-bold mb-3">
-
- Realtime History
-
-</h2>
-
-<div
-id="historyContainer"
-class="space-y-3">
+Neural Confidence
 </div>
 
-</div>
+`;
 
-</div>
+generateBtn.disabled=false;
 
-</div>
+generateBtn.innerText=
+"🚀 วิเคราะห์เลข AI";
+
+}
+
+generateBtn.onclick=
+generateAI;
+
+</script>
 
 </body>
-
 </html>
